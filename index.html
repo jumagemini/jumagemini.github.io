@@ -1,0 +1,4005 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    <title>StreamHotspot · Cyber Cafe & Chat</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+    <style>
+        /* ===== RESET & BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --bg-primary: #0b0b0f;
+            --bg-secondary: #14141c;
+            --bg-card: #1c1c28;
+            --bg-card-hover: #28283a;
+            --text-primary: #f0f0f5;
+            --text-secondary: #a8a8b8;
+            --text-muted: #6a6a7a;
+            --accent: #e02d5a;
+            --accent-hover: #c01f4a;
+            --accent-glow: rgba(224, 45, 90, 0.25);
+            --green: #00c88c;
+            --green-hover: #00a875;
+            --gold: #f5b342;
+            --blue: #4a9eff;
+            --blue-hover: #3a7fdd;
+            --border-color: #2a2a3a;
+            --radius: 14px;
+            --radius-sm: 8px;
+            --shadow: 0 12px 40px rgba(0, 0, 0, 0.7);
+            --transition: 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --banner-height: 200px;
+            --poster-width: 150px;
+            --poster-height: 225px;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            padding-bottom: 80px;
+        }
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+        img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+        button {
+            cursor: pointer;
+            font-family: inherit;
+            border: none;
+            outline: none;
+            background: none;
+            color: inherit;
+            font-size: inherit;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 6px;
+        }
+
+        /* ===== UTILITY ===== */
+        .container {
+            max-width: 1320px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .section-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section-title i {
+            color: var(--accent);
+            font-size: 1.1rem;
+        }
+        .section-title .badge {
+            font-size: 0.7rem;
+            font-weight: 600;
+            background: var(--accent);
+            color: #fff;
+            padding: 2px 12px;
+            border-radius: 20px;
+            letter-spacing: 0.3px;
+        }
+        .text-muted {
+            color: var(--text-muted);
+        }
+        .text-secondary {
+            color: var(--text-secondary);
+        }
+        .hidden {
+            display: none !important;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: rgba(11, 11, 15, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 10px 0;
+        }
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, var(--accent), #f5a623);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .logo i {
+            -webkit-text-fill-color: var(--accent);
+            font-size: 1.3rem;
+        }
+        .logo span {
+            -webkit-text-fill-color: var(--text-primary);
+            font-weight: 400;
+        }
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .bandwidth-indicator {
+            background: var(--bg-card);
+            padding: 4px 14px 4px 10px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+        .bandwidth-indicator .speed-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .bandwidth-indicator .speed-dot.green {
+            background: var(--green);
+        }
+        .bandwidth-indicator .speed-dot.yellow {
+            background: var(--gold);
+        }
+        .bandwidth-indicator .speed-dot.red {
+            background: var(--accent);
+        }
+        .bandwidth-indicator .speed-val {
+            color: var(--text-primary);
+        }
+        .header-actions .cart-btn {
+            position: relative;
+            font-size: 1.2rem;
+            padding: 6px 10px;
+            border-radius: var(--radius-sm);
+            background: var(--bg-card);
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+        .header-actions .cart-btn:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--border-color);
+        }
+        .header-actions .cart-btn .cart-count {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: var(--accent);
+            color: #fff;
+            font-size: 0.6rem;
+            font-weight: 700;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+            border: 2px solid var(--bg-primary);
+        }
+        .connection-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            padding: 4px 12px 4px 8px;
+            border-radius: 40px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+        }
+        .connection-status .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            animation: pulse-dot 2s infinite;
+        }
+        .connection-status .status-dot.online {
+            background: var(--green);
+        }
+        .connection-status .status-dot.offline {
+            background: var(--text-muted);
+            animation: none;
+        }
+        @keyframes pulse-dot {
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.5;
+                transform: scale(0.8);
+            }
+        }
+
+        /* ===== TABS ===== */
+        .tabs-nav {
+            display: flex;
+            gap: 4px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            padding: 4px;
+            margin: 16px 0 20px;
+            border: 1px solid var(--border-color);
+            overflow-x: auto;
+            flex-wrap: nowrap;
+        }
+        .tabs-nav .tab-btn {
+            padding: 10px 16px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 0.8rem;
+            transition: var(--transition);
+            white-space: nowrap;
+            color: var(--text-secondary);
+            flex: 1;
+            text-align: center;
+            background: transparent;
+            min-width: fit-content;
+        }
+        .tabs-nav .tab-btn:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.04);
+        }
+        .tabs-nav .tab-btn.active {
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 4px 16px var(--accent-glow);
+        }
+        .tabs-nav .tab-btn i {
+            margin-right: 6px;
+        }
+        .tab-content {
+            display: none;
+            animation: fadeUp 0.3s ease;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        @keyframes fadeUp {
+            0% {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== BANDWIDTH / PACKAGES TAB ===== */
+        .bandwidth-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-sm);
+            padding: 16px 18px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+        .stat-card .stat-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+        }
+        .stat-card .stat-value {
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-top: 2px;
+        }
+        .stat-card .stat-value .unit {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-left: 2px;
+        }
+        .stat-card .stat-bar {
+            margin-top: 8px;
+            height: 4px;
+            background: var(--bg-primary);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .stat-card .stat-bar .fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.6s ease;
+            background: var(--green);
+        }
+        .stat-card .stat-bar .fill.warning {
+            background: var(--gold);
+        }
+        .stat-card .stat-bar .fill.danger {
+            background: var(--accent);
+        }
+
+        .packages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .package-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-sm);
+            padding: 20px 18px;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        .package-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+        }
+        .package-card .package-speed {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+        .package-card .package-speed .unit {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+        .package-card .package-duration {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin: 2px 0 6px;
+        }
+        .package-card .package-price {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--green);
+        }
+        .package-card .package-price .currency {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+        .package-card .package-actions {
+            margin-top: 14px;
+            display: flex;
+            gap: 8px;
+        }
+        .package-card .package-actions .buy-btn {
+            flex: 1;
+            padding: 8px 0;
+            border-radius: 40px;
+            background: var(--accent);
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.8rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .package-card .package-actions .buy-btn:hover {
+            background: var(--accent-hover);
+            transform: scale(1.02);
+        }
+        .package-card .package-actions .buy-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .package-card .package-actions .buy-btn .badge-sold {
+            font-size: 0.55rem;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-left: 4px;
+        }
+        .package-card .tag {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 0.55rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            background: var(--gold);
+            color: #000;
+            padding: 2px 12px;
+            border-radius: 12px;
+        }
+        .package-card .tag.best {
+            background: var(--green);
+            color: #fff;
+        }
+
+        .connection-panel {
+            background: var(--bg-card);
+            border-radius: var(--radius-sm);
+            padding: 16px 20px;
+            border: 1px solid var(--border-color);
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .connection-panel .conn-info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+        .connection-panel .conn-info .conn-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--bg-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        .connection-panel .conn-info .conn-icon.online {
+            color: var(--green);
+            border: 2px solid var(--green);
+        }
+        .connection-panel .conn-info .conn-icon.offline {
+            color: var(--text-muted);
+            border: 2px solid var(--border-color);
+        }
+        .connection-panel .conn-info .conn-detail .conn-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .connection-panel .conn-info .conn-detail .conn-sub {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        .connection-panel .conn-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .connection-panel .conn-actions .disconnect-btn {
+            padding: 6px 18px;
+            border-radius: 40px;
+            background: var(--accent);
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.75rem;
+            transition: var(--transition);
+        }
+        .connection-panel .conn-actions .disconnect-btn:hover {
+            background: var(--accent-hover);
+        }
+        .connection-panel .conn-actions .disconnect-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* ============================================================ */
+        /* ===== CYBER CAFE SERVICES TAB ===== */
+        /* ============================================================ */
+        .services-layout {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 24px;
+            margin-top: 4px;
+        }
+        @media (max-width: 992px) {
+            .services-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .services-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+
+        .service-category h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-primary);
+        }
+        .service-category h4 i {
+            color: var(--accent);
+            width: 24px;
+            text-align: center;
+        }
+        .service-category .cat-badge {
+            font-size: 0.6rem;
+            font-weight: 600;
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            padding: 2px 10px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .service-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 10px;
+        }
+        .service-item {
+            background: var(--bg-card);
+            border-radius: var(--radius-sm);
+            padding: 14px 12px;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+            cursor: pointer;
+            text-align: center;
+            position: relative;
+        }
+        .service-item:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+            background: var(--bg-card-hover);
+        }
+        .service-item .si-icon {
+            font-size: 1.5rem;
+            color: var(--accent);
+            margin-bottom: 4px;
+        }
+        .service-item .si-name {
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .service-item .si-price {
+            font-size: 0.65rem;
+            color: var(--green);
+            font-weight: 500;
+            margin-top: 2px;
+        }
+        .service-item .si-desc {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+        .service-item .si-badge {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            font-size: 0.45rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            background: var(--gold);
+            color: #000;
+            padding: 1px 6px;
+            border-radius: 8px;
+        }
+
+        /* ===== CHAT PANEL (Global Styles) ===== */
+        .chat-panel {
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            height: 520px;
+            max-height: 65vh;
+        }
+        .chat-panel .chat-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+        .chat-panel .chat-header h4 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .chat-panel .chat-header h4 i {
+            color: var(--green);
+        }
+        .chat-panel .chat-header .chat-status {
+            font-size: 0.65rem;
+            color: var(--green);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .chat-panel .chat-header .chat-status .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--green);
+            display: inline-block;
+            animation: pulse-dot 1.5s infinite;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-height: 150px;
+        }
+        .chat-messages .msg {
+            max-width: 88%;
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            line-height: 1.5;
+            animation: fadeUp 0.25s ease;
+            word-break: break-word;
+        }
+        .chat-messages .msg.user {
+            align-self: flex-end;
+            background: var(--accent);
+            color: #fff;
+            border-bottom-right-radius: 2px;
+        }
+        .chat-messages .msg.bot {
+            align-self: flex-start;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-bottom-left-radius: 2px;
+            color: var(--text-secondary);
+        }
+        .chat-messages .msg .msg-time {
+            font-size: 0.55rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+            display: block;
+            text-align: right;
+        }
+        .chat-messages .msg .file-attachment {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 6px;
+            padding: 4px 10px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: var(--radius-sm);
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+        .chat-messages .msg .file-attachment i {
+            color: var(--blue);
+        }
+        .chat-messages .msg .service-request {
+            margin-top: 6px;
+            padding: 6px 10px;
+            background: rgba(0, 200, 140, 0.08);
+            border-radius: var(--radius-sm);
+            border-left: 3px solid var(--green);
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+        .chat-messages .msg .service-request strong {
+            color: var(--text-primary);
+        }
+        .chat-messages .empty-chat {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            padding: 30px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        .chat-messages .empty-chat i {
+            font-size: 2rem;
+            color: var(--border-color);
+        }
+
+        .chat-input-area {
+            padding: 10px 14px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+        .chat-input-row {
+            display: flex;
+            gap: 6px;
+            align-items: flex-end;
+        }
+        .chat-input-row .chat-input {
+            flex: 1;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 8px 12px;
+            color: var(--text-primary);
+            font-size: 0.8rem;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 38px;
+            max-height: 80px;
+            transition: var(--transition);
+        }
+        .chat-input-row .chat-input:focus {
+            border-color: var(--accent);
+            outline: none;
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+        .chat-input-row .chat-input::placeholder {
+            color: var(--text-muted);
+        }
+        .chat-input-row .chat-actions {
+            display: flex;
+            gap: 4px;
+            flex-shrink: 0;
+            align-items: center;
+        }
+        .chat-input-row .chat-actions button {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            flex-shrink: 0;
+        }
+        .chat-input-row .chat-actions button:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--accent);
+            color: var(--text-primary);
+        }
+        .chat-input-row .chat-actions .send-btn {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+        }
+        .chat-input-row .chat-actions .send-btn:hover {
+            background: var(--accent-hover);
+            border-color: var(--accent-hover);
+            transform: scale(1.05);
+        }
+        .chat-input-row .chat-actions .file-btn {
+            position: relative;
+            overflow: hidden;
+        }
+        .chat-input-row .chat-actions .file-btn input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .file-preview {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 10px;
+            background: var(--bg-card);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            flex-wrap: wrap;
+        }
+        .file-preview.active {
+            display: flex;
+        }
+        .file-preview .file-name {
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .file-preview .file-remove {
+            color: var(--accent);
+            cursor: pointer;
+            padding: 2px 6px;
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+        }
+        .file-preview .file-remove:hover {
+            background: rgba(224, 45, 90, 0.1);
+        }
+
+        /* Quick Replies */
+        .quick-replies {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            padding: 4px 0 2px;
+        }
+        .quick-replies .qr-btn {
+            font-size: 0.65rem;
+            padding: 3px 12px;
+            border-radius: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+        .quick-replies .qr-btn:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+        }
+
+        /* ===== MOVIE TAB CHAT ===== */
+        .movie-chat-section {
+            margin-top: 30px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+        }
+
+        /* ===== TUBONGE TAB ===== */
+        .tubonge-layout {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            gap: 24px;
+            margin-top: 4px;
+        }
+        @media (max-width: 768px) {
+            .tubonge-layout {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+        }
+
+        .users-panel {
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            padding: 16px;
+            height: 520px;
+            max-height: 65vh;
+            overflow-y: auto;
+        }
+        .users-panel h5 {
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .users-panel h5 i {
+            color: var(--green);
+            font-size: 0.6rem;
+        }
+        .user-list-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 8px;
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+            margin-bottom: 2px;
+        }
+        .user-list-item:hover {
+            background: var(--bg-card);
+        }
+        .user-list-item .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            border: 2px solid var(--border-color);
+        }
+        .user-list-item .avatar.online {
+            border-color: var(--green);
+        }
+        .user-list-item .uname {
+            font-size: 0.8rem;
+            font-weight: 500;
+            flex: 1;
+        }
+        .user-list-item .status-indicator {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--green);
+        }
+
+        /* ===== MOVIE TAB (existing) ===== */
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            background: var(--bg-card);
+            border-radius: var(--radius-sm);
+            padding: 4px 4px 4px 16px;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+        .search-bar:focus-within {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+        .search-bar input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            padding: 10px 0;
+            font-family: inherit;
+            min-width: 0;
+        }
+        .search-bar input::placeholder {
+            color: var(--text-muted);
+        }
+        .search-bar button {
+            padding: 8px 18px;
+            border-radius: var(--radius-sm);
+            background: var(--accent);
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+        .search-bar button:hover {
+            background: var(--accent-hover);
+        }
+        .search-bar .clear-btn {
+            background: transparent;
+            color: var(--text-muted);
+            padding: 0 10px;
+            font-size: 1rem;
+        }
+        .search-bar .clear-btn:hover {
+            color: var(--text-primary);
+        }
+        .search-results-info {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .banner-section {
+            margin: 0 0 24px;
+        }
+        .banner-wrapper {
+            position: relative;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            background: var(--bg-secondary);
+        }
+        .banner-track {
+            display: flex;
+            transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            will-change: transform;
+        }
+        .banner-slide {
+            min-width: 100%;
+            height: var(--banner-height);
+            display: flex;
+            align-items: center;
+            padding: 0 30px;
+            background-size: cover;
+            background-position: center 30%;
+            position: relative;
+            cursor: pointer;
+        }
+        .banner-slide::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, rgba(11, 11, 15, 0.85) 0%, rgba(11, 11, 15, 0.3) 70%, transparent 100%);
+            z-index: 1;
+        }
+        .banner-slide .banner-content {
+            position: relative;
+            z-index: 2;
+            max-width: 60%;
+        }
+        .banner-slide .banner-content .badge-top {
+            display: inline-block;
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: var(--accent);
+            color: #fff;
+            padding: 2px 14px;
+            border-radius: 20px;
+            margin-bottom: 4px;
+        }
+        .banner-slide .banner-content h2 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+            margin-bottom: 4px;
+        }
+        .banner-slide .banner-content p {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .banner-slide .banner-content .meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            flex-wrap: wrap;
+        }
+        .banner-slide .banner-content .meta .rating {
+            color: var(--gold);
+        }
+        .banner-slide .banner-content .btn-group {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+        .banner-slide .banner-content .btn-group .btn {
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.7rem;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .banner-slide .banner-content .btn-group .btn-primary {
+            background: var(--accent);
+            color: #fff;
+        }
+        .banner-slide .banner-content .btn-group .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: scale(1.02);
+        }
+        .banner-slide .banner-content .btn-group .btn-outline {
+            border: 1.5px solid rgba(255, 255, 255, 0.3);
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+        }
+        .banner-slide .banner-content .btn-group .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+        .banner-dots {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 6px;
+            z-index: 5;
+        }
+        .banner-dots .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+        }
+        .banner-dots .dot.active {
+            background: var(--accent);
+            width: 20px;
+            border-radius: 6px;
+        }
+        .banner-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 5;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            opacity: 0;
+        }
+        .banner-wrapper:hover .banner-arrow {
+            opacity: 1;
+        }
+        .banner-arrow:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+        .banner-arrow.prev {
+            left: 10px;
+        }
+        .banner-arrow.next {
+            right: 10px;
+        }
+
+        .movie-section {
+            margin-bottom: 28px;
+        }
+        .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(var(--poster-width), 1fr));
+            gap: 14px;
+        }
+        .movie-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            transition: var(--transition);
+            cursor: pointer;
+            border: 1px solid transparent;
+            position: relative;
+        }
+        .movie-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--border-color);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+            background: var(--bg-card-hover);
+        }
+        .movie-card .poster {
+            width: 100%;
+            aspect-ratio: 2/3;
+            background: var(--bg-secondary);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--text-muted);
+            background-size: cover;
+            background-position: center;
+        }
+        .movie-card .poster .play-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: var(--transition);
+        }
+        .movie-card:hover .poster .play-overlay {
+            opacity: 1;
+        }
+        .movie-card .poster .play-overlay i {
+            font-size: 2.2rem;
+            color: #fff;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 10px 14px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        .movie-card .poster .badge-type {
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            font-size: 0.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            padding: 2px 8px;
+            border-radius: 10px;
+            letter-spacing: 0.5px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .movie-card .poster .badge-price {
+            position: absolute;
+            bottom: 6px;
+            right: 6px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            background: var(--accent);
+            color: #fff;
+            padding: 2px 10px;
+            border-radius: 10px;
+        }
+        .movie-card .info {
+            padding: 10px 12px 12px;
+        }
+        .movie-card .info h4 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .movie-card .info .meta-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+        .movie-card .info .meta-row .rating i {
+            color: var(--gold);
+            margin-right: 2px;
+        }
+        .movie-card .info .actions {
+            display: flex;
+            gap: 4px;
+            margin-top: 8px;
+        }
+        .movie-card .info .actions button {
+            flex: 1;
+            padding: 4px 0;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+        }
+        .movie-card .info .actions button:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+        }
+        .movie-card .info .actions button.added {
+            background: var(--green);
+            border-color: var(--green);
+            color: #fff;
+        }
+        .no-results {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+        }
+        .no-results i {
+            font-size: 2.5rem;
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        /* ===== MODALS ===== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .modal-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-box {
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            max-width: 640px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 24px 26px 28px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            transform: scale(0.95) translateY(20px);
+            transition: transform 0.3s ease;
+        }
+        .modal-overlay.open .modal-box {
+            transform: scale(1) translateY(0);
+        }
+        .modal-box .modal-close {
+            float: right;
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            transition: var(--transition);
+            padding: 4px 8px;
+            border-radius: var(--radius-sm);
+        }
+        .modal-box .modal-close:hover {
+            color: #fff;
+            background: var(--bg-card);
+        }
+        .modal-box h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .modal-box .subtitle {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            margin-bottom: 12px;
+        }
+        .modal-box .modal-body .detail-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+        .modal-box .modal-body .detail-row .label {
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        .modal-box .modal-body .description {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+        .modal-box .modal-body .trailer-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 18px;
+            background: var(--accent);
+            color: #fff;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            transition: var(--transition);
+            margin-bottom: 12px;
+        }
+        .modal-box .modal-body .trailer-btn:hover {
+            background: var(--accent-hover);
+            transform: scale(1.02);
+        }
+        .modal-box .modal-body .price-tag {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .modal-box .modal-body .add-to-cart-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 24px;
+            background: var(--green);
+            color: #fff;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            transition: var(--transition);
+            margin-top: 4px;
+        }
+        .modal-box .modal-body .add-to-cart-btn:hover {
+            background: var(--green-hover);
+            transform: scale(1.02);
+        }
+        .modal-box .modal-body .add-to-cart-btn.in-cart {
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            cursor: default;
+        }
+        .season-block {
+            margin-top: 14px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 12px;
+        }
+        .season-block .season-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+        }
+        .season-block .episode-list {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            padding-left: 4px;
+        }
+        .season-block .episode-list .episode-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            padding: 3px 6px;
+            border-radius: var(--radius-sm);
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .season-block .episode-list .episode-item .ep-num {
+            font-weight: 600;
+            color: var(--text-muted);
+            min-width: 24px;
+        }
+
+        /* ===== CART SIDEBAR ===== */
+        .cart-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 150;
+            background: rgba(0, 0, 0, 0.6);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .cart-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 360px;
+            max-width: 92vw;
+            height: 100%;
+            z-index: 160;
+            background: var(--bg-secondary);
+            border-left: 1px solid var(--border-color);
+            padding: 20px 18px 26px;
+            display: flex;
+            flex-direction: column;
+            transform: translateX(100%);
+            transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: var(--shadow);
+        }
+        .cart-overlay.open .cart-sidebar {
+            transform: translateX(0);
+        }
+        .cart-sidebar .cart-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 12px;
+        }
+        .cart-sidebar .cart-header h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        .cart-sidebar .cart-header .close-cart {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            padding: 4px 8px;
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+        }
+        .cart-sidebar .cart-header .close-cart:hover {
+            color: #fff;
+            background: var(--bg-card);
+        }
+        .cart-sidebar .cart-items {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+        .cart-sidebar .cart-items .empty-msg {
+            color: var(--text-muted);
+            text-align: center;
+            padding: 30px 0;
+            font-size: 0.9rem;
+        }
+        .cart-sidebar .cart-items .empty-msg i {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 10px;
+            color: var(--border-color);
+        }
+        .cart-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .cart-item .thumb {
+            width: 44px;
+            height: 62px;
+            border-radius: var(--radius-sm);
+            background: var(--bg-card);
+            flex-shrink: 0;
+            background-size: cover;
+            background-position: center;
+        }
+        .cart-item .item-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .cart-item .item-info .title {
+            font-weight: 600;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .cart-item .item-info .type {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+        .cart-item .item-info .price {
+            font-weight: 700;
+            font-size: 0.8rem;
+            color: var(--accent);
+        }
+        .cart-item .remove-item {
+            color: var(--text-muted);
+            padding: 4px 6px;
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+        }
+        .cart-item .remove-item:hover {
+            color: var(--accent);
+            background: rgba(224, 45, 90, 0.1);
+        }
+        .cart-sidebar .cart-footer {
+            border-top: 1px solid var(--border-color);
+            padding-top: 12px;
+            margin-top: 4px;
+        }
+        .cart-sidebar .cart-footer .total-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .cart-sidebar .cart-footer .checkout-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--accent);
+            color: #fff;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .cart-sidebar .cart-footer .checkout-btn:hover {
+            background: var(--accent-hover);
+            transform: scale(1.01);
+        }
+        .cart-sidebar .cart-footer .checkout-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* ===== CHECKOUT MODAL ===== */
+        .checkout-box .mpesa-form {
+            margin: 14px 0 8px;
+        }
+        .checkout-box .mpesa-form label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-bottom: 4px;
+            color: var(--text-secondary);
+        }
+        .checkout-box .mpesa-form input {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            transition: var(--transition);
+            font-family: inherit;
+        }
+        .checkout-box .mpesa-form input:focus {
+            border-color: var(--accent);
+            outline: none;
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+        .checkout-box .mpesa-form .input-hint {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+        .checkout-box .total-confirm {
+            background: var(--bg-primary);
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            margin: 12px 0 14px;
+            border: 1px solid var(--border-color);
+        }
+        .checkout-box .pay-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--green);
+            color: #fff;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .checkout-box .pay-btn:hover {
+            background: var(--green-hover);
+            transform: scale(1.01);
+        }
+        .checkout-box .pay-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .stk-sim {
+            background: var(--bg-primary);
+            border-radius: var(--radius-sm);
+            padding: 14px 16px;
+            margin: 10px 0 6px;
+            border: 1px solid var(--border-color);
+            display: none;
+        }
+        .stk-sim.active {
+            display: block;
+            animation: stk-pop 0.4s ease;
+        }
+        @keyframes stk-pop {
+            0% {
+                opacity: 0;
+                transform: scale(0.96);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        .stk-sim .stk-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+        .stk-sim .stk-header .stk-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: #fff;
+        }
+        .stk-sim .stk-header .stk-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .stk-sim .stk-header .stk-title small {
+            display: block;
+            font-weight: 400;
+            font-size: 0.65rem;
+            color: var(--text-muted);
+        }
+        .stk-sim .stk-body {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        .stk-sim .stk-body .stk-amount {
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+        .stk-sim .stk-progress {
+            margin-top: 8px;
+            height: 3px;
+            background: var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .stk-sim .stk-progress .bar {
+            height: 100%;
+            width: 0%;
+            background: var(--green);
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+        .stk-sim .stk-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .stk-sim .stk-actions button {
+            flex: 1;
+            padding: 6px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 0.75rem;
+            transition: var(--transition);
+        }
+        .stk-sim .stk-actions .stk-success {
+            background: var(--green);
+            color: #fff;
+        }
+        .stk-sim .stk-actions .stk-success:hover {
+            background: var(--green-hover);
+        }
+        .stk-sim .stk-actions .stk-fail {
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+        .stk-sim .stk-actions .stk-fail:hover {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
+
+        /* ===== DOWNLOAD MODAL ===== */
+        .download-box .link-display {
+            background: var(--bg-primary);
+            padding: 14px 16px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            margin: 10px 0;
+            word-break: break-all;
+            font-size: 0.8rem;
+            font-family: 'Inter', monospace;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .download-box .link-display .link-text {
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .download-box .link-display .copy-btn {
+            padding: 4px 12px;
+            border-radius: var(--radius-sm);
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            font-weight: 500;
+            font-size: 0.7rem;
+            transition: var(--transition);
+            flex-shrink: 0;
+        }
+        .download-box .link-display .copy-btn:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+        }
+        .download-box .expiry-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            padding: 6px 12px;
+            background: rgba(0, 200, 140, 0.08);
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(0, 200, 140, 0.15);
+        }
+        .download-box .expiry-info i {
+            color: var(--green);
+        }
+        .download-box .expiry-info .countdown {
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        /* ===== AD BANNER ===== */
+        .ad-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            background: rgba(11, 11, 15, 0.95);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-top: 1px solid var(--border-color);
+            padding: 6px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            min-height: 48px;
+            transition: transform 0.4s ease;
+            transform: translateY(0);
+            flex-wrap: wrap;
+        }
+        .ad-banner.hidden {
+            transform: translateY(100%);
+        }
+        .ad-banner .ad-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            flex: 1;
+        }
+        .ad-banner .ad-content .ad-icon {
+            font-size: 1.2rem;
+            color: var(--gold);
+            flex-shrink: 0;
+        }
+        .ad-banner .ad-content .ad-text {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+        .ad-banner .ad-content .ad-text strong {
+            color: var(--text-primary);
+        }
+        .ad-banner .ad-content .ad-cta {
+            padding: 3px 14px;
+            border-radius: 40px;
+            background: var(--accent);
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.7rem;
+            transition: var(--transition);
+            flex-shrink: 0;
+        }
+        .ad-banner .ad-content .ad-cta:hover {
+            background: var(--accent-hover);
+        }
+        .ad-banner .ad-dismiss {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            padding: 4px 6px;
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+            flex-shrink: 0;
+        }
+        .ad-banner .ad-dismiss:hover {
+            color: #fff;
+            background: var(--bg-card);
+        }
+        .ad-banner .ad-timer {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+        .ad-banner .ad-timer .circle {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--green);
+            display: inline-block;
+            animation: pulse-dot 1.5s infinite;
+        }
+
+        /* ===== TOAST ===== */
+        .toast-container {
+            position: fixed;
+            bottom: 72px;
+            right: 16px;
+            z-index: 300;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-width: 320px;
+            width: 100%;
+        }
+        .toast {
+            padding: 10px 16px;
+            border-radius: var(--radius-sm);
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+            font-size: 0.8rem;
+            animation: toast-in 0.35s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(8px);
+        }
+        .toast.success {
+            border-left: 4px solid var(--green);
+        }
+        .toast.error {
+            border-left: 4px solid var(--accent);
+        }
+        .toast.info {
+            border-left: 4px solid var(--gold);
+        }
+        @keyframes toast-in {
+            0% {
+                opacity: 0;
+                transform: translateX(40px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 992px) {
+            :root {
+                --banner-height: 170px;
+                --poster-width: 130px;
+                --poster-height: 195px;
+            }
+            .services-layout,
+            .tubonge-layout {
+                grid-template-columns: 1fr;
+            }
+            .chat-panel {
+                height: 420px;
+                max-height: 55vh;
+            }
+            .users-panel {
+                height: 200px;
+                max-height: 30vh;
+            }
+            .banner-slide .banner-content {
+                max-width: 75%;
+            }
+            .banner-slide .banner-content h2 {
+                font-size: 1.1rem;
+            }
+        }
+        @media (max-width: 768px) {
+            :root {
+                --banner-height: 140px;
+                --poster-width: 110px;
+                --poster-height: 165px;
+            }
+            .container {
+                padding: 0 12px;
+            }
+            .banner-slide {
+                padding: 0 14px;
+            }
+            .banner-slide .banner-content {
+                max-width: 85%;
+            }
+            .banner-slide .banner-content h2 {
+                font-size: 0.9rem;
+            }
+            .banner-slide .banner-content p {
+                font-size: 0.65rem;
+                -webkit-line-clamp: 2;
+            }
+            .banner-slide .banner-content .meta {
+                font-size: 0.6rem;
+                gap: 6px;
+            }
+            .banner-slide .banner-content .btn-group .btn {
+                font-size: 0.6rem;
+                padding: 4px 10px;
+            }
+            .banner-arrow {
+                display: none;
+            }
+            .movie-grid {
+                gap: 10px;
+            }
+            .header-inner {
+                flex-wrap: nowrap;
+            }
+            .logo {
+                font-size: 1.1rem;
+            }
+            .bandwidth-indicator {
+                font-size: 0.6rem;
+                padding: 2px 10px 2px 6px;
+            }
+            .bandwidth-indicator .speed-dot {
+                width: 6px;
+                height: 6px;
+            }
+            .connection-status {
+                font-size: 0.6rem;
+                padding: 2px 8px 2px 6px;
+            }
+            .tabs-nav .tab-btn {
+                font-size: 0.65rem;
+                padding: 8px 8px;
+            }
+            .tabs-nav .tab-btn i {
+                margin-right: 4px;
+            }
+            .packages-grid {
+                grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+                gap: 10px;
+            }
+            .package-card .package-speed {
+                font-size: 1.4rem;
+            }
+            .package-card .package-price {
+                font-size: 1rem;
+            }
+            .modal-box {
+                padding: 16px 16px 20px;
+                max-height: 95vh;
+            }
+            .cart-sidebar {
+                width: 100%;
+                max-width: 100%;
+                border-left: none;
+            }
+            .stat-card .stat-value {
+                font-size: 1.2rem;
+            }
+            .service-items {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+            .ad-banner .ad-content .ad-text {
+                font-size: 0.65rem;
+            }
+            .ad-banner .ad-content .ad-cta {
+                font-size: 0.6rem;
+                padding: 2px 10px;
+            }
+            .toast-container {
+                bottom: 64px;
+                right: 8px;
+                left: 8px;
+                max-width: 100%;
+            }
+            .connection-panel {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+            }
+            .connection-panel .conn-info {
+                justify-content: center;
+            }
+            .connection-panel .conn-actions {
+                justify-content: center;
+            }
+            .chat-panel {
+                height: 380px;
+                max-height: 50vh;
+            }
+            .quick-replies .qr-btn {
+                font-size: 0.55rem;
+                padding: 2px 8px;
+            }
+        }
+        @media (max-width: 480px) {
+            :root {
+                --banner-height: 110px;
+                --poster-width: 90px;
+                --poster-height: 135px;
+            }
+            .banner-slide .banner-content .badge-top {
+                font-size: 0.45rem;
+                padding: 1px 8px;
+            }
+            .banner-slide .banner-content h2 {
+                font-size: 0.75rem;
+            }
+            .banner-slide .banner-content .btn-group .btn {
+                font-size: 0.5rem;
+                padding: 3px 8px;
+            }
+            .movie-card .info h4 {
+                font-size: 0.7rem;
+            }
+            .movie-card .info .actions button {
+                font-size: 0.55rem;
+                padding: 3px 0;
+            }
+            .section-title {
+                font-size: 0.95rem;
+            }
+            .modal-box h3 {
+                font-size: 1rem;
+            }
+            .packages-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+            .package-card {
+                padding: 14px 12px;
+            }
+            .package-card .package-speed {
+                font-size: 1.2rem;
+            }
+            .package-card .package-duration {
+                font-size: 0.7rem;
+            }
+            .package-card .package-price {
+                font-size: 0.9rem;
+            }
+            .bandwidth-stats {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+            .stat-card {
+                padding: 10px 12px;
+            }
+            .stat-card .stat-value {
+                font-size: 1rem;
+            }
+            .search-bar input {
+                font-size: 0.8rem;
+                padding: 8px 0;
+            }
+            .search-bar button {
+                font-size: 0.7rem;
+                padding: 6px 12px;
+            }
+            .service-items {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            }
+            .service-item {
+                padding: 10px 8px;
+            }
+            .service-item .si-icon {
+                font-size: 1.2rem;
+            }
+            .service-item .si-name {
+                font-size: 0.65rem;
+            }
+            .chat-panel {
+                height: 340px;
+                max-height: 45vh;
+            }
+            .users-panel {
+                height: 150px;
+                max-height: 25vh;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== HEADER ===== -->
+    <header class="header">
+        <div class="container header-inner">
+            <a href="#" class="logo">
+                <i class="fas fa-wifi"></i>Stream<span>Hotspot</span>
+            </a>
+            <div class="header-actions">
+                <div class="bandwidth-indicator" id="bandwidthIndicator">
+                    <span class="speed-dot green" id="speedDot"></span>
+                    <span>Total: <span class="speed-val" id="totalBandwidthDisplay">15</span> Mbps</span>
+                    <span style="color:var(--text-muted);margin:0 2px;">·</span>
+                    <span>Free: <span class="speed-val" id="freeBandwidthDisplay">15</span> Mbps</span>
+                </div>
+                <div class="connection-status" id="connectionStatus">
+                    <span class="status-dot offline" id="connDot"></span>
+                    <span id="connLabel">Offline</span>
+                </div>
+                <button class="cart-btn" id="cartToggle" aria-label="Open cart">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" id="cartCount">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== TABS NAV ===== -->
+    <div class="container">
+        <nav class="tabs-nav" id="tabsNav">
+            <button class="tab-btn active" data-tab="packages"><i class="fas fa-tachometer-alt"></i> Buy Internet</button>
+            <button class="tab-btn" data-tab="movies"><i class="fas fa-film"></i> Movie Shop</button>
+            <button class="tab-btn" data-tab="services"><i class="fas fa-print"></i> Cyber Cafe</button>
+            <button class="tab-btn" data-tab="tubonge"><i class="fas fa-comments"></i> Tubonge</button>
+        </nav>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- TAB 1: PACKAGES -->
+    <!-- ============================================================ -->
+    <div class="tab-content active" id="tabPackages">
+        <div class="container">
+            <div class="bandwidth-stats" id="bandwidthStats">
+                <div class="stat-card">
+                    <div class="stat-label">Total Bandwidth</div>
+                    <div class="stat-value">15 <span class="unit">Mbps</span></div>
+                    <div class="stat-bar"><div class="fill" style="width:100%;background:var(--text-muted);"></div></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Used</div>
+                    <div class="stat-value" id="usedBandwidthDisplay">0 <span class="unit">Mbps</span></div>
+                    <div class="stat-bar"><div class="fill" id="usedBar" style="width:0%;"></div></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Available</div>
+                    <div class="stat-value" id="availBandwidthDisplay">15 <span class="unit">Mbps</span></div>
+                    <div class="stat-bar"><div class="fill green" id="availBar" style="width:100%;"></div></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Active Connections</div>
+                    <div class="stat-value" id="activeConnectionsCount">0</div>
+                </div>
+            </div>
+
+            <h3 style="font-weight:600;margin-bottom:12px;font-size:1.1rem;"><i class="fas fa-tags" style="color:var(--accent);margin-right:8px;"></i>Choose Your Package</h3>
+            <div class="packages-grid" id="packagesGrid"></div>
+
+            <div class="connection-panel" id="connectionPanel">
+                <div class="conn-info">
+                    <div class="conn-icon offline" id="connIcon"><i class="fas fa-plug"></i></div>
+                    <div class="conn-detail">
+                        <div class="conn-title" id="connTitle">Not connected</div>
+                        <div class="conn-sub" id="connSub">Purchase a package to get online</div>
+                    </div>
+                </div>
+                <div class="conn-actions">
+                    <button class="disconnect-btn" id="disconnectBtn" disabled><i class="fas fa-power-off"></i> Disconnect</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- TAB 2: MOVIES -->
+    <!-- ============================================================ -->
+    <div class="tab-content" id="tabMovies">
+        <div class="container">
+            <div class="search-bar" id="searchBar">
+                <input type="text" id="searchInput" placeholder="Search for movies, series, genres..." />
+                <button id="searchBtn"><i class="fas fa-search"></i> Search</button>
+                <button class="clear-btn hidden" id="clearSearchBtn"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="search-results-info" id="searchResultsInfo"></div>
+
+            <section class="banner-section">
+                <div class="banner-wrapper" id="bannerWrapper">
+                    <div class="banner-track" id="bannerTrack"></div>
+                    <div class="banner-dots" id="bannerDots"></div>
+                    <button class="banner-arrow prev" id="bannerPrev"><i class="fas fa-chevron-left"></i></button>
+                    <button class="banner-arrow next" id="bannerNext"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </section>
+
+            <section class="movie-section" id="popularSection">
+                <div class="section-title"><i class="fas fa-fire"></i> Popular Now <span class="badge">Trending</span></div>
+                <div class="movie-grid" id="popularGrid"></div>
+            </section>
+            <section class="movie-section" id="upcomingSection">
+                <div class="section-title"><i class="fas fa-calendar-alt"></i> Upcoming Releases <span class="badge">Soon</span></div>
+                <div class="movie-grid" id="upcomingGrid"></div>
+            </section>
+            <section class="movie-section" id="seriesSection">
+                <div class="section-title"><i class="fas fa-tv"></i> Series &amp; Seasons <span class="badge">Binge</span></div>
+                <div class="movie-grid" id="seriesGrid"></div>
+            </section>
+
+            <!-- MOVIES SUPPORT CHAT -->
+            <div class="movie-chat-section">
+                <div class="section-title"><i class="fas fa-headset"></i> Movies Support Chat <span class="badge">Get help</span></div>
+                <div class="services-layout" style="grid-template-columns: 1fr;">
+                    <div class="chat-panel" id="moviesChatPanel" style="height: 400px; max-height: 50vh;">
+                        <div class="chat-header">
+                            <h4><i class="fas fa-ticket-alt"></i> Support Desk</h4>
+                            <div class="chat-status"><span class="dot"></span> Online</div>
+                        </div>
+                        <div class="chat-messages" id="moviesChatMessages">
+                            <div class="empty-chat">
+                                <i class="fas fa-comment"></i>
+                                <span>Ask about movie availability,<br />request download links, or report issues.</span>
+                            </div>
+                        </div>
+                        <div class="chat-input-area">
+                            <div class="quick-replies" id="moviesQuickReplies">
+                                <button class="qr-btn" data-msg="📽️ Check Movie Availability">📽️ Availability</button>
+                                <button class="qr-btn" data-msg="⬇️ Request Download Link">⬇️ Download Link</button>
+                                <button class="qr-btn" data-msg="❓ Report Issue">❓ Report Issue</button>
+                                <button class="qr-btn" data-msg="🎬 Recommend a movie">🎬 Recommend</button>
+                            </div>
+                            <div class="chat-input-row">
+                                <textarea class="chat-input" id="moviesChatInput" placeholder="Type your movie query…" rows="1"></textarea>
+                                <div class="chat-actions">
+                                    <button class="send-btn" id="moviesSendBtn"><i class="fas fa-paper-plane"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- TAB 3: CYBER CAFE SERVICES -->
+    <!-- ============================================================ -->
+    <div class="tab-content" id="tabServices">
+        <div class="container">
+            <div class="services-layout">
+                <div class="services-grid" id="servicesGrid">
+                    <!-- Document Services -->
+                    <div class="service-category">
+                        <h4><i class="fas fa-file-alt"></i> Document Services <span class="cat-badge">Print · Copy · Scan</span></h4>
+                        <div class="service-items" data-category="document">
+                            <div class="service-item" data-service="Printing (B/W)" data-price="10/page">
+                                <div class="si-icon"><i class="fas fa-print"></i></div>
+                                <div class="si-name">Printing (B/W)</div>
+                                <div class="si-price">KSh 10/page</div>
+                            </div>
+                            <div class="service-item" data-service="Printing (Color)" data-price="30/page">
+                                <div class="si-icon"><i class="fas fa-palette"></i></div>
+                                <div class="si-name">Printing (Color)</div>
+                                <div class="si-price">KSh 30/page</div>
+                            </div>
+                            <div class="service-item" data-service="Scanning" data-price="15/page">
+                                <div class="si-icon"><i class="fas fa-camera"></i></div>
+                                <div class="si-name">Scanning</div>
+                                <div class="si-price">KSh 15/page</div>
+                            </div>
+                            <div class="service-item" data-service="Photocopying" data-price="5/page">
+                                <div class="si-icon"><i class="fas fa-copy"></i></div>
+                                <div class="si-name">Photocopying</div>
+                                <div class="si-price">KSh 5/page</div>
+                            </div>
+                            <div class="service-item" data-service="Lamination" data-price="50/sheet">
+                                <div class="si-icon"><i class="fas fa-layer-group"></i></div>
+                                <div class="si-name">Lamination</div>
+                                <div class="si-price">KSh 50/sheet</div>
+                            </div>
+                            <div class="service-item" data-service="Binding" data-price="150/book">
+                                <div class="si-icon"><i class="fas fa-book"></i></div>
+                                <div class="si-name">Binding</div>
+                                <div class="si-price">KSh 150/book</div>
+                            </div>
+                            <div class="service-item" data-service="Typesetting" data-price="200/page">
+                                <div class="si-icon"><i class="fas fa-font"></i></div>
+                                <div class="si-name">Typesetting</div>
+                                <div class="si-price">KSh 200/page</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Government & Administrative -->
+                    <div class="service-category">
+                        <h4><i class="fas fa-landmark"></i> Government &amp; Admin <span class="cat-badge">Assistance</span></h4>
+                        <div class="service-items" data-category="government">
+                            <div class="service-item" data-service="Passport Application" data-price="500">
+                                <div class="si-icon"><i class="fas fa-passport"></i></div>
+                                <div class="si-name">Passport Application</div>
+                                <div class="si-price">KSh 500</div>
+                            </div>
+                            <div class="service-item" data-service="Driving License" data-price="350">
+                                <div class="si-icon"><i class="fas fa-id-card"></i></div>
+                                <div class="si-name">Driving License</div>
+                                <div class="si-price">KSh 350</div>
+                            </div>
+                            <div class="service-item" data-service="PAN Card" data-price="200">
+                                <div class="si-icon"><i class="fas fa-credit-card"></i></div>
+                                <div class="si-name">PAN Card</div>
+                                <div class="si-price">KSh 200</div>
+                            </div>
+                            <div class="service-item" data-service="KRA Tax Returns" data-price="400">
+                                <div class="si-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+                                <div class="si-name">KRA Tax Returns</div>
+                                <div class="si-price">KSh 400</div>
+                            </div>
+                            <div class="service-item" data-service="Company Registration" data-price="1500">
+                                <div class="si-icon"><i class="fas fa-building"></i></div>
+                                <div class="si-name">Company Registration</div>
+                                <div class="si-price">KSh 1,500</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Technical Support -->
+                    <div class="service-category">
+                        <h4><i class="fas fa-tools"></i> Technical Support <span class="cat-badge">IT Help</span></h4>
+                        <div class="service-items" data-category="tech">
+                            <div class="service-item" data-service="Software Installation" data-price="300">
+                                <div class="si-icon"><i class="fas fa-download"></i></div>
+                                <div class="si-name">Software Installation</div>
+                                <div class="si-price">KSh 300</div>
+                            </div>
+                            <div class="service-item" data-service="Computer Rental" data-price="200/hr">
+                                <div class="si-icon"><i class="fas fa-laptop"></i></div>
+                                <div class="si-name">Computer Rental</div>
+                                <div class="si-price">KSh 200/hr</div>
+                            </div>
+                            <div class="service-item" data-service="IT Troubleshooting" data-price="500">
+                                <div class="si-icon"><i class="fas fa-wrench"></i></div>
+                                <div class="si-name">IT Troubleshooting</div>
+                                <div class="si-price">KSh 500</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional -->
+                    <div class="service-category">
+                        <h4><i class="fas fa-plus-circle"></i> Additional Services <span class="cat-badge">Extras</span></h4>
+                        <div class="service-items" data-category="additional">
+                            <div class="service-item" data-service="Passport Photos" data-price="200">
+                                <div class="si-icon"><i class="fas fa-camera-retro"></i></div>
+                                <div class="si-name">Passport Photos</div>
+                                <div class="si-price">KSh 200</div>
+                            </div>
+                            <div class="service-item" data-service="Stationery Sales" data-price="varies">
+                                <div class="si-icon"><i class="fas fa-pencil-alt"></i></div>
+                                <div class="si-name">Stationery Sales</div>
+                                <div class="si-price">Prices vary</div>
+                            </div>
+                            <div class="service-item" data-service="Food &amp; Beverages" data-price="varies">
+                                <div class="si-icon"><i class="fas fa-coffee"></i></div>
+                                <div class="si-name">Food &amp; Beverages</div>
+                                <div class="si-price">Prices vary</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cyber Cafe Chat Panel -->
+                <div class="chat-panel" id="cafeChatPanel">
+                    <div class="chat-header">
+                        <h4><i class="fas fa-comment-dots"></i> Service Chat <span style="font-weight:400;font-size:0.7rem;color:var(--text-muted);">· Request assistance</span></h4>
+                        <div class="chat-status"><span class="dot"></span> Online</div>
+                    </div>
+                    <div class="chat-messages" id="cafeChatMessages">
+                        <div class="empty-chat">
+                            <i class="fas fa-comment"></i>
+                            <span>No messages yet.<br />Click a service or type your request.</span>
+                        </div>
+                    </div>
+                    <div class="chat-input-area">
+                        <div class="file-preview" id="cafeFilePreview">
+                            <i class="fas fa-paperclip"></i>
+                            <span class="file-name" id="cafeFileName">file.pdf</span>
+                            <span class="file-remove" id="cafeFileRemove"><i class="fas fa-times"></i></span>
+                        </div>
+                        <div class="chat-input-row">
+                            <textarea class="chat-input" id="cafeChatInput" placeholder="Type your service request…" rows="1"></textarea>
+                            <div class="chat-actions">
+                                <button class="file-btn" id="cafeFileBtn" title="Attach file">
+                                    <i class="fas fa-paperclip"></i>
+                                    <input type="file" id="cafeFileInput" multiple />
+                                </button>
+                                <button class="send-btn" id="cafeSendBtn"><i class="fas fa-paper-plane"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- TAB 4: TUBONGE (Community Chat) -->
+    <!-- ============================================================ -->
+    <div class="tab-content" id="tabTubonge">
+        <div class="container">
+            <div class="section-title"><i class="fas fa-comments"></i> Tubonge · Community Chat <span class="badge">Live</span></div>
+            <div class="tubonge-layout">
+                <!-- Users Panel -->
+                <div class="users-panel" id="tubongeUsersPanel">
+                    <h5><i class="fas fa-circle"></i> Online (<span id="onlineCount">0</span>)</h5>
+                    <div id="onlineUsersList"></div>
+                </div>
+
+                <!-- Chat Panel -->
+                <div class="chat-panel" id="tubongeChatPanel">
+                    <div class="chat-header">
+                        <h4><i class="fas fa-users"></i> #Tubonge</h4>
+                        <div class="chat-status"><span class="dot"></span> Live</div>
+                    </div>
+                    <div class="chat-messages" id="tubongeChatMessages">
+                        <div class="empty-chat">
+                            <i class="fas fa-comment"></i>
+                            <span>Welcome to Tubonge!<br />Say hello to the community.</span>
+                        </div>
+                    </div>
+                    <div class="chat-input-area">
+                        <div class="chat-input-row">
+                            <textarea class="chat-input" id="tubongeChatInput" placeholder="Type a message…" rows="1"></textarea>
+                            <div class="chat-actions">
+                                <button class="send-btn" id="tubongeSendBtn"><i class="fas fa-paper-plane"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MODALS ===== -->
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal-box"><button class="modal-close" id="detailClose"><i class="fas fa-times"></i></button>
+            <div id="detailContent"></div>
+        </div>
+    </div>
+    <div class="modal-overlay" id="trailerModal">
+        <div class="modal-box" style="max-width:780px;padding:12px 12px 16px;">
+            <button class="modal-close" id="trailerClose"><i class="fas fa-times"></i></button>
+            <div id="trailerContent" style="position:relative;padding-bottom:56.25%;height:0;border-radius:var(--radius-sm);overflow:hidden;">
+                <iframe id="trailerIframe" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+    <div class="cart-overlay" id="cartOverlay">
+        <div class="cart-sidebar" id="cartSidebar">
+            <div class="cart-header"><h3><i class="fas fa-shopping-cart" style="color:var(--accent);margin-right:6px;"></i>Your Cart</h3><button class="close-cart" id="cartClose"><i class="fas fa-times"></i></button></div>
+            <div class="cart-items" id="cartItems"><div class="empty-msg"><i class="fas fa-box-open"></i>Your cart is empty.</div></div>
+            <div class="cart-footer"><div class="total-row"><span>Total</span><span id="cartTotal">KSh 0</span></div><button class="checkout-btn" id="checkoutBtn" disabled><i class="fas fa-lock"></i> Proceed to Checkout</button></div>
+        </div>
+    </div>
+    <div class="modal-overlay" id="checkoutModal">
+        <div class="modal-box checkout-box">
+            <button class="modal-close" id="checkoutClose"><i class="fas fa-times"></i></button>
+            <h3><i class="fas fa-phone" style="color:var(--green);margin-right:6px;"></i>MPESA Checkout</h3>
+            <div class="subtitle">Pay securely via MPESA STK Push</div>
+            <div class="modal-body">
+                <div class="total-confirm"><span>Amount due</span><span id="checkoutAmount">KSh 0</span></div>
+                <div class="mpesa-form">
+                    <label for="phoneInput">Phone Number (MPESA registered)</label>
+                    <input type="tel" id="phoneInput" placeholder="0712345678" maxlength="10" />
+                    <div class="input-hint">Enter 10-digit number without leading 0 or +254</div>
+                </div>
+                <button class="pay-btn" id="payBtn"><i class="fas fa-bolt"></i> Pay with MPESA</button>
+                <div class="stk-sim" id="stkSim">
+                    <div class="stk-header"><div class="stk-icon"><i class="fas fa-check"></i></div><div class="stk-title">STK Push Sent <small>Check your phone for MPESA prompt</small></div></div>
+                    <div class="stk-body"><p>Amount: <span class="stk-amount" id="stkAmount">KSh 0</span></p><p style="font-size:0.7rem;color:var(--text-muted);">Waiting for confirmation…</p><div class="stk-progress"><div class="bar" id="stkProgress"></div></div></div>
+                    <div class="stk-actions"><button class="stk-success" id="stkSuccess"><i class="fas fa-check"></i> Confirm Payment</button><button class="stk-fail" id="stkFail"><i class="fas fa-times"></i> Cancel</button></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-overlay" id="downloadModal">
+        <div class="modal-box download-box">
+            <button class="modal-close" id="downloadClose"><i class="fas fa-times"></i></button>
+            <h3><i class="fas fa-download" style="color:var(--green);margin-right:6px;"></i>Download Ready</h3>
+            <div class="subtitle">Your temporary download link is valid for 12 hours.</div>
+            <div class="modal-body">
+                <div class="link-display"><i class="fas fa-link" style="color:var(--text-muted);"></i><span class="link-text" id="downloadLinkDisplay">https://streamvault.local/download/abc123...</span><button class="copy-btn" id="copyLinkBtn"><i class="fas fa-copy"></i> Copy</button></div>
+                <div class="expiry-info"><i class="fas fa-clock"></i><span>Expires in: <span class="countdown" id="countdownDisplay">11h 59m 59s</span></span></div>
+                <p style="margin-top:12px;font-size:0.75rem;color:var(--text-secondary);"><i class="fas fa-info-circle"></i> Link is session-based and will expire after 12 hours. Download once.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== AD BANNER ===== -->
+    <div class="ad-banner" id="adBanner">
+        <div class="ad-content" id="adContent">
+            <span class="ad-icon"><i class="fas fa-bullhorn"></i></span>
+            <span class="ad-text" id="adText"><strong>Special Offer:</strong> Get 30% off your first purchase! Use code <strong>STREAM30</strong></span>
+            <a href="#" class="ad-cta" id="adCta">Claim Now</a>
+        </div>
+        <div class="ad-timer"><span class="circle"></span><span id="adTimerText">30s</span></div>
+        <button class="ad-dismiss" id="adDismiss"><i class="fas fa-times"></i></button>
+    </div>
+
+    <!-- ===== TOAST ===== -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ============================================================ -->
+    <!-- ===== JAVASCRIPT ===== -->
+    <script>
+        (function() {
+            'use strict';
+
+            // ==========================================
+            // DATA: MOVIES & SERIES
+            // ==========================================
+            const MOVIES = [{
+                id: 'm1',
+                type: 'movie',
+                title: 'Galactic Uprising',
+                genre: 'Sci-Fi / Action',
+                year: 2025,
+                rating: 4.8,
+                price: 350,
+                description: 'In a distant galaxy, a small band of rebels rises against an oppressive empire.',
+                poster: 'https://picsum.photos/seed/m1/300/450',
+                banner: 'https://picsum.photos/seed/m1b/800/300',
+                trailer: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+                featured: true
+            }, {
+                id: 'm2',
+                type: 'movie',
+                title: 'Neon Dreams',
+                genre: 'Drama / Romance',
+                year: 2024,
+                rating: 4.5,
+                price: 300,
+                description: 'A vibrant love story set against the neon-lit streets of Tokyo.',
+                poster: 'https://picsum.photos/seed/m2/300/450',
+                banner: 'https://picsum.photos/seed/m2b/800/300',
+                trailer: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+                featured: true
+            }, {
+                id: 'm3',
+                type: 'movie',
+                title: 'Shadow Protocol',
+                genre: 'Thriller / Spy',
+                year: 2025,
+                rating: 4.3,
+                price: 320,
+                description: 'A disavowed agent must race against time to stop a global cyber-attack.',
+                poster: 'https://picsum.photos/seed/m3/300/450',
+                banner: 'https://picsum.photos/seed/m3b/800/300',
+                trailer: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+                featured: true
+            }, {
+                id: 'm4',
+                type: 'movie',
+                title: 'Whispers in the Wind',
+                genre: 'Horror / Mystery',
+                year: 2024,
+                rating: 4.1,
+                price: 280,
+                description: 'A family moves into a secluded farmhouse only to discover dark secrets.',
+                poster: 'https://picsum.photos/seed/m4/300/450',
+                banner: 'https://picsum.photos/seed/m4b/800/300',
+                trailer: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+                featured: false
+            }, {
+                id: 'm5',
+                type: 'movie',
+                title: 'Ocean\'s Horizon',
+                genre: 'Adventure / Documentary',
+                year: 2025,
+                rating: 4.7,
+                price: 250,
+                description: 'An immersive documentary beneath the waves exploring uncharted depths.',
+                poster: 'https://picsum.photos/seed/m5/300/450',
+                banner: 'https://picsum.photos/seed/m5b/800/300',
+                trailer: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+                featured: true
+            }, {
+                id: 'm6',
+                type: 'movie',
+                title: 'City of Echoes',
+                genre: 'Drama / Crime',
+                year: 2024,
+                rating: 4.2,
+                price: 290,
+                description: 'A gritty crime drama set in the underbelly of a sprawling metropolis.',
+                poster: 'https://picsum.photos/seed/m6/300/450',
+                banner: 'https://picsum.photos/seed/m6b/800/300',
+                trailer: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+                featured: false
+            }, {
+                id: 'm7',
+                type: 'movie',
+                title: 'The Last Frontier',
+                genre: 'Western / Action',
+                year: 2025,
+                rating: 4.4,
+                price: 310,
+                description: 'A lone gunslinger defends a small town from a ruthless band of outlaws.',
+                poster: 'https://picsum.photos/seed/m7/300/450',
+                banner: 'https://picsum.photos/seed/m7b/800/300',
+                trailer: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+                featured: false
+            }, {
+                id: 'm8',
+                type: 'movie',
+                title: 'Parallel Minds',
+                genre: 'Sci-Fi / Thriller',
+                year: 2024,
+                rating: 4.0,
+                price: 270,
+                description: 'In a world where thoughts can be shared, a dangerous secret threatens society.',
+                poster: 'https://picsum.photos/seed/m8/300/450',
+                banner: 'https://picsum.photos/seed/m8b/800/300',
+                trailer: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+                featured: false
+            }];
+
+            const SERIES = [{
+                id: 's1',
+                type: 'series',
+                title: 'Empire of Shadows',
+                genre: 'Fantasy / Drama',
+                year: 2024,
+                rating: 4.9,
+                price: 450,
+                description: 'A sprawling fantasy epic about power, betrayal, and the fight for a kingdom.',
+                poster: 'https://picsum.photos/seed/s1/300/450',
+                banner: 'https://picsum.photos/seed/s1b/800/300',
+                trailer: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+                seasons: [{ season: 1, episodes: [{ episode: 1, title: 'The Awakening' }, { episode: 2,
+                            title: 'Whispers of War' }, { episode: 3, title: 'The Crown\'s Burden' },
+                        { episode: 4, title: 'Shadows Gather' }, { episode: 5, title: 'The Reckoning' }] },
+                    { season: 2, episodes: [{ episode: 1, title: 'Ashes of the Past' }, { episode: 2,
+                            title: 'The New Order' }, { episode: 3, title: 'Blood and Steel' },
+                        { episode: 4, title: 'The Siege' }, { episode: 5, title: 'Dawn of a New Age' }] }
+                ]
+            }, {
+                id: 's2',
+                type: 'series',
+                title: 'CyberNet',
+                genre: 'Sci-Fi / Tech',
+                year: 2025,
+                rating: 4.6,
+                price: 420,
+                description: 'Hackers and corporations battle for control of the digital realm.',
+                poster: 'https://picsum.photos/seed/s2/300/450',
+                banner: 'https://picsum.photos/seed/s2b/800/300',
+                trailer: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+                seasons: [{ season: 1, episodes: [{ episode: 1, title: 'Zero Day' }, { episode: 2,
+                            title: 'The Firewall' }, { episode: 3, title: 'Ghost in the Machine' },
+                        { episode: 4, title: 'Data Breach' }, { episode: 5, title: 'The Protocol' },
+                        { episode: 6, title: 'Endgame' }] }]
+            }, {
+                id: 's3',
+                type: 'series',
+                title: 'Medici: Legacy',
+                genre: 'Historical / Drama',
+                year: 2024,
+                rating: 4.3,
+                price: 380,
+                description: 'The powerful Medici family navigates political intrigue in Renaissance Florence.',
+                poster: 'https://picsum.photos/seed/s3/300/450',
+                banner: 'https://picsum.photos/seed/s3b/800/300',
+                trailer: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+                seasons: [{ season: 1, episodes: [{ episode: 1, title: 'The Heir' }, { episode: 2,
+                            title: 'The Conspiracy' }, { episode: 3, title: 'The Artist' },
+                        { episode: 4, title: 'The Betrayal' }, { episode: 5, title: 'The Rebirth' }] },
+                    { season: 2, episodes: [{ episode: 1, title: 'The Pope\'s Favor' }, { episode: 2,
+                            title: 'The Rival' }, { episode: 3, title: 'The Masterpiece' },
+                        { episode: 4, title: 'The Siege of Florence' }] }]
+            }, {
+                id: 's4',
+                type: 'series',
+                title: 'Wild Frontiers',
+                genre: 'Adventure / Nature',
+                year: 2025,
+                rating: 4.5,
+                price: 340,
+                description: 'A breathtaking nature documentary exploring remote corners of the planet.',
+                poster: 'https://picsum.photos/seed/s4/300/450',
+                banner: 'https://picsum.photos/seed/s4b/800/300',
+                trailer: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+                seasons: [{ season: 1, episodes: [{ episode: 1, title: 'The Amazon' }, { episode: 2,
+                            title: 'The Arctic' }, { episode: 3, title: 'The Deep Ocean' },
+                        { episode: 4, title: 'The Savannah' }, { episode: 5, title: 'The Jungle Canopy' },
+                        { episode: 6, title: 'The Desert' }] }]
+            }];
+
+            const ALL_ITEMS = [...MOVIES, ...SERIES];
+            const ITEM_MAP = Object.fromEntries(ALL_ITEMS.map(i => [i.id, i]));
+
+            // ==========================================
+            // STATE
+            // ==========================================
+            const TOTAL_BANDWIDTH = 15;
+            let activeConnections = [];
+            let currentUserConnection = null;
+            let cart = [];
+            let bannerIndex = 0;
+            let bannerInterval = null;
+            let adInterval = null;
+            let adSeconds = 30;
+            let adDismissed = false;
+            let downloadLink = null;
+            let downloadExpiry = null;
+            let countdownInterval = null;
+            let isProcessingPayment = false;
+            let searchQuery = '';
+
+            // Chat state
+            let cafeAttachedFiles = [];
+            let moviesChatMessages = [];
+            let cafeChatMessages = [];
+            let tubongeMessages = [];
+            let tubongeInterval = null;
+
+            // ==========================================
+            // PACKAGES
+            // ==========================================
+            const PACKAGES = [
+                { speed: 2, duration: '2hrs', price: 20, label: '2 Mbps · 2hrs', durationMs: 2 * 60 * 60 * 1000,
+                tag: '' },
+                { speed: 2, duration: '24hrs', price: 40, label: '2 Mbps · 24hrs', durationMs: 24 * 60 * 60 * 1000,
+                    tag: '' },
+                { speed: 3, duration: '1 week', price: 300, label: '3 Mbps · 1 week', durationMs: 7 * 24 * 60 * 60 *
+                        1000, tag: 'best' },
+                { speed: 5, duration: '1 month', price: 1000, label: '5 Mbps · 1 month', durationMs: 30 * 24 * 60 * 60 *
+                        1000, tag: '' }
+            ];
+
+            // ==========================================
+            // HELPERS
+            // ==========================================
+            function toast(msg, type = 'info') {
+                const el = document.createElement('div');
+                el.className = `toast ${type}`;
+                const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', info: 'fa-info-circle' };
+                el.innerHTML = `<i class="fas ${icons[type] || icons.info}"></i> ${msg}`;
+                document.getElementById('toastContainer').prepend(el);
+                setTimeout(() => { if (el.parentNode) el.remove(); }, 4000);
+            }
+
+            function fmtCurrency(amt) { return `KSh ${amt}`; }
+
+            function genDownloadLink() { return 'https://streamvault.local/download/' + Math.random().toString(36).slice(2,
+                    10) + Date.now().toString(36); }
+
+            function getExpiry(hours = 12) { return Date.now() + hours * 60 * 60 * 1000; }
+
+            function fmtCountdown(ms) {
+                if (ms <= 0) return 'Expired';
+                const s = Math.floor(ms / 1000);
+                const h = Math.floor(s / 3600);
+                const m = Math.floor((s % 3600) / 60);
+                const sec = s % 60;
+                return `${h}h ${m}m ${sec}s`;
+            }
+
+            function getItem(id) { return ITEM_MAP[id]; }
+
+            function isInCart(id) { return cart.includes(id); }
+
+            function getCartTotal() { return cart.reduce((s, id) => s + (getItem(id)?.price || 0), 0); }
+
+            function getCartItems() { return cart.map(id => getItem(id)).filter(Boolean); }
+
+            function getUsedBandwidth() { return activeConnections.reduce((s, c) => s + c.package.speed, 0); }
+
+            function getAvailableBandwidth() { return Math.max(0, TOTAL_BANDWIDTH - getUsedBandwidth()); }
+
+            function canAllocate(speed) { return getAvailableBandwidth() >= speed; }
+
+            // ==========================================
+            // RENDER: BANDWIDTH
+            // ==========================================
+            function renderBandwidthStats() {
+                const used = getUsedBandwidth();
+                const avail = getAvailableBandwidth();
+                const pct = TOTAL_BANDWIDTH > 0 ? (used / TOTAL_BANDWIDTH) * 100 : 0;
+
+                document.getElementById('usedBandwidthDisplay').textContent = used.toFixed(1);
+                document.getElementById('availBandwidthDisplay').textContent = avail.toFixed(1);
+                document.getElementById('activeConnectionsCount').textContent = activeConnections.length;
+                document.getElementById('freeBandwidthDisplay').textContent = avail.toFixed(1);
+
+                const usedBar = document.getElementById('usedBar');
+                usedBar.style.width = Math.min(pct, 100) + '%';
+                usedBar.className = 'fill';
+                if (pct > 90) usedBar.classList.add('danger');
+                else if (pct > 70) usedBar.classList.add('warning');
+
+                const availBar = document.getElementById('availBar');
+                availBar.style.width = (100 - Math.min(pct, 100)) + '%';
+                availBar.className = 'fill';
+                if (avail < 2) availBar.classList.add('danger');
+                else if (avail < 5) availBar.classList.add('warning');
+
+                const dot = document.getElementById('speedDot');
+                dot.className = 'speed-dot';
+                if (avail === 0) dot.classList.add('red');
+                else if (avail < 3) dot.classList.add('yellow');
+                else dot.classList.add('green');
+
+                updateConnectionUI();
+                renderPackages();
+            }
+
+            function renderPackages() {
+                const grid = document.getElementById('packagesGrid');
+                const avail = getAvailableBandwidth();
+                grid.innerHTML = PACKAGES.map((pkg, idx) => {
+                    const canBuy = avail >= pkg.speed;
+                    const isActive = currentUserConnection && currentUserConnection.package.speed === pkg.speed &&
+                        currentUserConnection.package.duration === pkg.duration;
+                    return `
+                        <div class="package-card">
+                            ${pkg.tag ? `<span class="tag ${pkg.tag}">${pkg.tag === 'best' ? 'Best Value' : pkg.tag}</span>` : ''}
+                            <div class="package-speed">${pkg.speed} <span class="unit">Mbps</span></div>
+                            <div class="package-duration">${pkg.duration}</div>
+                            <div class="package-price">${fmtCurrency(pkg.price)}</div>
+                            <div class="package-actions">
+                                <button class="buy-btn" data-pkg="${idx}" ${!canBuy || isActive ? 'disabled' : ''}>
+                                    ${isActive ? '<i class="fas fa-check-circle"></i> Active' : canBuy ? '<i class="fas fa-shopping-bag"></i> Buy Now' : '<i class="fas fa-ban"></i> Unavailable'}
+                                    ${!canBuy && !isActive ? `<span class="badge-sold">Bandwidth full</span>` : ''}
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                grid.querySelectorAll('.buy-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const idx = parseInt(btn.dataset.pkg);
+                        if (!isNaN(idx)) handleBuyPackage(idx);
+                    });
+                });
+            }
+
+            function updateConnectionUI() {
+                const icon = document.getElementById('connIcon');
+                const title = document.getElementById('connTitle');
+                const sub = document.getElementById('connSub');
+                const dot = document.getElementById('connDot');
+                const label = document.getElementById('connLabel');
+                const disconnectBtn = document.getElementById('disconnectBtn');
+
+                if (currentUserConnection) {
+                    const pkg = currentUserConnection.package;
+                    icon.className = 'conn-icon online';
+                    icon.innerHTML = '<i class="fas fa-wifi"></i>';
+                    title.textContent = `Connected · ${pkg.speed} Mbps (${pkg.duration})`;
+                    const remaining = currentUserConnection.expiresAt - Date.now();
+                    sub.textContent = remaining > 0 ? `Expires in ${fmtCountdown(remaining)}` : 'Expired — re-purchase to continue';
+                    dot.className = 'status-dot online';
+                    label.textContent = 'Online';
+                    disconnectBtn.disabled = false;
+                } else {
+                    icon.className = 'conn-icon offline';
+                    icon.innerHTML = '<i class="fas fa-plug"></i>';
+                    title.textContent = 'Not connected';
+                    sub.textContent = 'Purchase a package to get online';
+                    dot.className = 'status-dot offline';
+                    label.textContent = 'Offline';
+                    disconnectBtn.disabled = true;
+                }
+            }
+
+            // ==========================================
+            // BUY PACKAGE
+            // ==========================================
+            function handleBuyPackage(pkgIdx) {
+                const pkg = PACKAGES[pkgIdx];
+                if (!pkg) return;
+                if (currentUserConnection) {
+                    toast('You are already connected. Disconnect first.', 'error');
+                    return;
+                }
+                if (!canAllocate(pkg.speed)) {
+                    toast('Not enough bandwidth available. Try a smaller package.', 'error');
+                    return;
+                }
+                openPackageCheckout(pkg);
+            }
+
+            function openPackageCheckout(pkg) {
+                const modal = document.getElementById('checkoutModal');
+                document.getElementById('checkoutAmount').textContent = fmtCurrency(pkg.price);
+                document.getElementById('phoneInput').value = '';
+                document.getElementById('stkSim').classList.remove('active');
+                document.getElementById('stkProgress').style.width = '0%';
+                document.getElementById('payBtn').disabled = false;
+                isProcessingPayment = false;
+                modal.dataset.pkgIndex = PACKAGES.indexOf(pkg);
+                modal.dataset.pkgSpeed = pkg.speed;
+                modal.dataset.pkgDuration = pkg.duration;
+                modal.dataset.pkgPrice = pkg.price;
+                modal.dataset.pkgDurationMs = pkg.durationMs;
+                modal.dataset.mode = 'package';
+                modal.classList.add('open');
+            }
+
+            // ==========================================
+            // MPESA PAYMENT
+            // ==========================================
+            function handlePayment() {
+                if (isProcessingPayment) return;
+                const modal = document.getElementById('checkoutModal');
+                const phone = document.getElementById('phoneInput').value.trim();
+                if (!phone || phone.length < 9) {
+                    toast('Please enter a valid phone number (e.g. 0712345678)', 'error');
+                    return;
+                }
+                const mode = modal.dataset.mode || 'package';
+                let amount = 0;
+                if (mode === 'package') {
+                    amount = parseInt(modal.dataset.pkgPrice) || 0;
+                } else {
+                    amount = getCartTotal();
+                }
+                if (amount <= 0) { toast('Invalid amount', 'error'); return; }
+
+                isProcessingPayment = true;
+                document.getElementById('payBtn').disabled = true;
+
+                const stk = document.getElementById('stkSim');
+                document.getElementById('stkAmount').textContent = fmtCurrency(amount);
+                stk.classList.add('active');
+                let progress = 0;
+                const anim = setInterval(() => {
+                    progress += 2;
+                    if (progress >= 70) { clearInterval(anim);
+                        document.getElementById('stkProgress').style.width = '70%'; } else { document
+                            .getElementById('stkProgress').style.width = progress + '%'; }
+                }, 100);
+
+                toast(`STK Push sent to ${phone}`, 'info');
+                document.getElementById('stkSuccess').disabled = false;
+                document.getElementById('stkFail').disabled = false;
+                isProcessingPayment = false;
+            }
+
+            function completePayment(success) {
+                const modal = document.getElementById('checkoutModal');
+                const mode = modal.dataset.mode || 'package';
+
+                if (success) {
+                    if (mode === 'package') {
+                        const speed = parseFloat(modal.dataset.pkgSpeed);
+                        const duration = modal.dataset.pkgDuration;
+                        const price = parseInt(modal.dataset.pkgPrice);
+                        const durationMs = parseInt(modal.dataset.pkgDurationMs);
+
+                        const conn = {
+                            id: 'conn_' + Date.now(),
+                            package: { speed, duration, price, label: `${speed} Mbps · ${duration}`,
+                            durationMs },
+                            allocatedAt: Date.now(),
+                            expiresAt: Date.now() + durationMs
+                        };
+                        activeConnections.push(conn);
+                        currentUserConnection = conn;
+                        toast(`Connected! ${speed} Mbps for ${duration}`, 'success');
+
+                        modal.classList.remove('open');
+                        document.getElementById('stkSim').classList.remove('active');
+                        renderBandwidthStats();
+                        updateConnectionUI();
+
+                        setTimeout(() => { disconnectUser(); }, durationMs);
+
+                    } else {
+                        const link = genDownloadLink();
+                        const expiry = getExpiry(12);
+                        downloadLink = link;
+                        downloadExpiry = expiry;
+
+                        cart = [];
+                        renderCart();
+                        renderGrids();
+
+                        modal.classList.remove('open');
+                        document.getElementById('stkSim').classList.remove('active');
+
+                        document.getElementById('downloadLinkDisplay').textContent = link;
+                        document.getElementById('countdownDisplay').textContent = fmtCountdown(expiry - Date.now());
+                        document.getElementById('downloadModal').classList.add('open');
+
+                        if (countdownInterval) clearInterval(countdownInterval);
+                        countdownInterval = setInterval(() => {
+                            const rem = downloadExpiry - Date.now();
+                            if (rem <= 0) { clearInterval(countdownInterval);
+                                document.getElementById('countdownDisplay').textContent = 'Expired';
+                                toast('Download link expired', 'error'); return; }
+                            document.getElementById('countdownDisplay').textContent = fmtCountdown(rem);
+                        }, 1000);
+
+                        toast('Payment successful! Download link ready.', 'success');
+                    }
+                } else {
+                    modal.classList.remove('open');
+                    document.getElementById('stkSim').classList.remove('active');
+                    toast('Payment cancelled or failed. Try again.', 'error');
+                    document.getElementById('payBtn').disabled = false;
+                    isProcessingPayment = false;
+                }
+                renderBandwidthStats();
+            }
+
+            function disconnectUser() {
+                if (!currentUserConnection) return;
+                const idx = activeConnections.indexOf(currentUserConnection);
+                if (idx > -1) activeConnections.splice(idx, 1);
+                currentUserConnection = null;
+                toast('Disconnected successfully.', 'info');
+                renderBandwidthStats();
+                updateConnectionUI();
+            }
+
+            // ==========================================
+            // MOVIE GRIDS & SEARCH
+            // ==========================================
+            function renderGrids(filter = '') {
+                const q = filter.toLowerCase().trim();
+                const filtered = ALL_ITEMS.filter(item => {
+                    if (!q) return true;
+                    return item.title.toLowerCase().includes(q) ||
+                        item.genre.toLowerCase().includes(q) ||
+                        item.type.toLowerCase().includes(q) ||
+                        String(item.year).includes(q);
+                });
+
+                const popular = filtered.filter(i => i.featured);
+                const upcoming = filtered.filter(i => !i.featured && i.type === 'movie').slice(0, 4);
+                const series = filtered.filter(i => i.type === 'series');
+
+                document.getElementById('popularGrid').innerHTML = popular.length ? popular.map(i => renderCard(i)).join(
+                    '') : `<div class="no-results"><i class="fas fa-search"></i>No results</div>`;
+                document.getElementById('upcomingGrid').innerHTML = upcoming.length ? upcoming.map(i => renderCard(i))
+                    .join('') : `<div class="no-results"><i class="fas fa-search"></i>No results</div>`;
+                document.getElementById('seriesGrid').innerHTML = series.length ? series.map(i => renderCard(i)).join(
+                    '') : `<div class="no-results"><i class="fas fa-search"></i>No results</div>`;
+
+                document.getElementById('searchResultsInfo').textContent = q ? `Found ${filtered.length} result${filtered.length !== 1 ? 's' : ''} for "${q}"` :
+                    '';
+
+                document.querySelectorAll('.movie-card').forEach(card => {
+                    const id = card.dataset.id;
+                    if (!id) return;
+                    card.querySelector('[data-action="detail"]')?.addEventListener('click', (e) => { e
+                            .stopPropagation();
+                        openDetail(id); });
+                    card.querySelector('[data-action="trailer"]')?.addEventListener('click', (e) => { e
+                            .stopPropagation();
+                        openTrailer(id); });
+                    card.querySelector('[data-action="cart"]')?.addEventListener('click', (e) => { e
+                            .stopPropagation();
+                        toggleCart(id); });
+                    card.addEventListener('click', () => openDetail(id));
+                });
+
+                renderBanner(filtered);
+            }
+
+            function renderCard(item) {
+                const inCart = isInCart(item.id);
+                const isSeries = item.type === 'series';
+                return `
+                    <div class="movie-card" data-id="${item.id}">
+                        <div class="poster" style="background-image:url('${item.poster}')">
+                            <span class="badge-type">${isSeries ? 'Series' : 'Movie'}</span>
+                            ${item.price ? `<span class="badge-price">${fmtCurrency(item.price)}</span>` : ''}
+                            <div class="play-overlay"><i class="fas fa-play-circle"></i></div>
+                        </div>
+                        <div class="info">
+                            <h4>${item.title}</h4>
+                            <div class="meta-row">
+                                <span>${item.year} · ${item.genre.split('/')[0].trim()}</span>
+                                <span class="rating"><i class="fas fa-star"></i> ${item.rating}</span>
+                            </div>
+                            <div class="actions">
+                                <button data-action="detail"><i class="fas fa-info-circle"></i></button>
+                                <button data-action="trailer"><i class="fas fa-play"></i></button>
+                                <button data-action="cart" class="${inCart ? 'added' : ''}">
+                                    ${inCart ? '<i class="fas fa-check"></i>' : '<i class="fas fa-cart-plus"></i>'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            function renderBanner(filtered = ALL_ITEMS) {
+                const featured = filtered.filter(i => i.featured);
+                const track = document.getElementById('bannerTrack');
+                const dots = document.getElementById('bannerDots');
+
+                if (!featured.length) {
+                    track.innerHTML =
+                        `<div class="banner-slide" style="background:#1c1c28;justify-content:center;text-align:center;"><div class="banner-content"><h2>No featured content</h2></div></div>`;
+                    dots.innerHTML = '';
+                    return;
+                }
+
+                track.innerHTML = featured.map((item, idx) => `
+                    <div class="banner-slide" style="background-image:url('${item.banner}')" data-id="${item.id}" data-index="${idx}">
+                        <div class="banner-content">
+                            <span class="badge-top">${item.type === 'series' ? 'Series' : 'Movie'}</span>
+                            <h2>${item.title}</h2>
+                            <p>${item.description}</p>
+                            <div class="meta"><span>${item.year}</span><span>${item.genre}</span><span class="rating"><i class="fas fa-star"></i> ${item.rating}</span></div>
+                            <div class="btn-group">
+                                <button class="btn btn-primary" data-action="detail" data-id="${item.id}"><i class="fas fa-info-circle"></i> Details</button>
+                                <button class="btn btn-outline" data-action="trailer" data-id="${item.id}"><i class="fas fa-play"></i> Trailer</button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+
+                dots.innerHTML = featured.map((_, i) =>
+                    `<button class="dot ${i === 0 ? 'active' : ''}" data-index="${i}"></button>`
+                ).join('');
+
+                track.querySelectorAll('.btn-primary').forEach(btn => {
+                    btn.addEventListener('click', (e) => { e.stopPropagation();
+                        openDetail(btn.dataset.id); });
+                });
+                track.querySelectorAll('.btn-outline').forEach(btn => {
+                    btn.addEventListener('click', (e) => { e.stopPropagation();
+                        openTrailer(btn.dataset.id); });
+                });
+                track.querySelectorAll('.banner-slide').forEach(slide => {
+                    slide.addEventListener('click', () => { const id = slide.dataset.id; if (id) openDetail(id); });
+                });
+
+                dots.querySelectorAll('.dot').forEach(dot => {
+                    dot.addEventListener('click', () => { goToBanner(parseInt(dot.dataset.index), featured); });
+                });
+
+                document.getElementById('bannerPrev').onclick = () => {
+                    goToBanner((bannerIndex - 1 + featured.length) % featured.length, featured);
+                };
+                document.getElementById('bannerNext').onclick = () => {
+                    goToBanner((bannerIndex + 1) % featured.length, featured);
+                };
+
+                if (bannerInterval) clearInterval(bannerInterval);
+                bannerInterval = setInterval(() => {
+                    goToBanner((bannerIndex + 1) % featured.length, featured);
+                }, 5000);
+                goToBanner(0, featured);
+            }
+
+            function goToBanner(index, featured) {
+                const slides = document.querySelectorAll('#bannerTrack .banner-slide');
+                if (!slides.length) return;
+                const total = slides.length;
+                bannerIndex = (index + total) % total;
+                document.getElementById('bannerTrack').style.transform = `translateX(-${bannerIndex * 100}%)`;
+                document.querySelectorAll('#bannerDots .dot').forEach((dot, i) => {
+                    dot.classList.toggle('active', i === bannerIndex);
+                });
+            }
+
+            // ==========================================
+            // DETAIL / TRAILER
+            // ==========================================
+            function openDetail(id) {
+                const item = getItem(id);
+                if (!item) return toast('Item not found', 'error');
+                const inCart = isInCart(id);
+                const isSeries = item.type === 'series';
+                let seasonsHtml = '';
+                if (isSeries && item.seasons) {
+                    seasonsHtml = item.seasons.map(s => `
+                        <div class="season-block">
+                            <div class="season-title">Season ${s.season}</div>
+                            <div class="episode-list">
+                                ${s.episodes.map(e => `<div class="episode-item"><span class="ep-num">E${e.episode}</span><span>${e.title}</span></div>`).join('')}
+                            </div>
+                        </div>
+                    `).join('');
+                }
+
+                document.getElementById('detailContent').innerHTML = `
+                    <h3>${item.title}</h3>
+                    <div class="subtitle">${item.genre} · ${item.year} · <span class="rating"><i class="fas fa-star" style="color:var(--gold);"></i> ${item.rating}</span></div>
+                    <div class="modal-body">
+                        <div class="detail-row"><span><span class="label">Type:</span> ${isSeries ? 'Series' : 'Movie'}</span><span><span class="label">Price:</span> <span class="price-tag">${fmtCurrency(item.price)}</span></span></div>
+                        <p class="description">${item.description}</p>
+                        <button class="trailer-btn" data-action="trailer-modal" data-id="${item.id}"><i class="fas fa-play-circle"></i> Watch Trailer</button>
+                        ${seasonsHtml}
+                        <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">
+                            <button class="add-to-cart-btn ${inCart ? 'in-cart' : ''}" data-action="detail-cart" data-id="${item.id}" ${inCart ? 'disabled' : ''}>
+                                ${inCart ? '<i class="fas fa-check"></i> In Cart' : '<i class="fas fa-cart-plus"></i> Add to Cart'}
+                            </button>
+                            ${inCart ? `<span style="font-size:0.75rem;color:var(--text-muted);display:flex;align-items:center;"><i class="fas fa-check-circle" style="color:var(--green);margin-right:6px;"></i> Already in cart</span>` : ''}
+                        </div>
+                    </div>
+                `;
+
+                document.getElementById('detailContent').querySelector('[data-action="trailer-modal"]')?.addEventListener(
+                    'click', () => openTrailer(item.id));
+                document.getElementById('detailContent').querySelector('[data-action="detail-cart"]')?.addEventListener(
+                    'click', () => {
+                        toggleCart(item.id);
+                        openDetail(item.id);
+                        renderGrids(searchQuery);
+                        renderCart();
+                    });
+
+                document.getElementById('detailModal').classList.add('open');
+            }
+
+            function openTrailer(id) {
+                const item = getItem(id);
+                if (!item) return toast('Item not found', 'error');
+                let url = item.trailer || 'https://www.youtube.com/embed/dQw4w9WgXcQ';
+                if (url.includes('watch?v=')) { const v = url.split('v=')[1]?.split('&')[0]; if (v) url =
+                        `https://www.youtube.com/embed/${v}`; } else if (url.includes('youtu.be/')) { const v = url.split(
+                        'youtu.be/')[1]?.split('?')[0]; if (v) url = `https://www.youtube.com/embed/${v}`; }
+                document.getElementById('trailerIframe').src = url + '?autoplay=1&rel=0';
+                document.getElementById('trailerModal').classList.add('open');
+            }
+
+            // ==========================================
+            // CART
+            // ==========================================
+            function toggleCart(id) {
+                const item = getItem(id);
+                if (!item) return toast('Item not found', 'error');
+                const idx = cart.indexOf(id);
+                if (idx > -1) { cart.splice(idx, 1);
+                    toast(`Removed "${item.title}"`, 'info'); } else { cart.push(id);
+                    toast(`Added "${item.title}"`, 'success'); }
+                renderCart();
+                renderGrids(searchQuery);
+                const detail = document.getElementById('detailModal');
+                if (detail.classList.contains('open')) {
+                    const currId = document.querySelector('#detailContent [data-action="detail-cart"]')?.dataset.id;
+                    if (currId) openDetail(currId);
+                }
+            }
+
+            function renderCart() {
+                const items = getCartItems();
+                const total = getCartTotal();
+                document.getElementById('cartCount').textContent = items.length;
+                document.getElementById('cartTotal').textContent = fmtCurrency(total);
+                document.getElementById('checkoutBtn').disabled = items.length === 0;
+
+                const container = document.getElementById('cartItems');
+                if (!items.length) {
+                    container.innerHTML =
+                        `<div class="empty-msg"><i class="fas fa-box-open"></i>Your cart is empty.</div>`;
+                    return;
+                }
+                container.innerHTML = items.map(item => `
+                    <div class="cart-item">
+                        <div class="thumb" style="background-image:url('${item.poster}')"></div>
+                        <div class="item-info"><div class="title">${item.title}</div><div class="type">${item.type === 'series' ? 'Series' : 'Movie'} · ${item.year}</div><div class="price">${fmtCurrency(item.price)}</div></div>
+                        <button class="remove-item" data-id="${item.id}"><i class="fas fa-trash-alt"></i></button>
+                    </div>
+                `).join('');
+                container.querySelectorAll('.remove-item').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const id = btn.dataset.id;
+                        const idx = cart.indexOf(id);
+                        if (idx > -1) { cart.splice(idx, 1);
+                            toast(`Removed "${getItem(id)?.title}"`, 'info');
+                            renderCart();
+                            renderGrids(searchQuery); }
+                    });
+                });
+            }
+
+            function openMovieCheckout() {
+                const items = getCartItems();
+                if (!items.length) return toast('Cart is empty', 'error');
+                const total = getCartTotal();
+                const modal = document.getElementById('checkoutModal');
+                document.getElementById('checkoutAmount').textContent = fmtCurrency(total);
+                document.getElementById('phoneInput').value = '';
+                document.getElementById('stkSim').classList.remove('active');
+                document.getElementById('stkProgress').style.width = '0%';
+                document.getElementById('payBtn').disabled = false;
+                isProcessingPayment = false;
+                modal.dataset.mode = 'movie';
+                modal.dataset.pkgPrice = total;
+                modal.classList.add('open');
+            }
+
+            // ==========================================
+            // CYBER CAFE CHAT SYSTEM
+            // ==========================================
+            function addCafeMessage(text, sender = 'user', files = []) {
+                const container = document.getElementById('cafeChatMessages');
+                const empty = container.querySelector('.empty-chat');
+                if (empty) empty.remove();
+
+                const msgDiv = document.createElement('div');
+                msgDiv.className = `msg ${sender}`;
+
+                let content = text;
+                if (sender === 'user' && text.startsWith('SERVICE:')) {
+                    const serviceName = text.replace('SERVICE:', '').trim();
+                    content =
+                        `<div class="service-request"><i class="fas fa-concierge-bell" style="color:var(--green);margin-right:6px;"></i> <strong>Service Request:</strong> ${serviceName}</div>`;
+                    setTimeout(() => {
+                        addCafeMessage(
+                            `Thank you for your interest in <strong>${serviceName}</strong>. Our team will assist you shortly. Please provide any additional details or upload relevant files.`,
+                            'bot');
+                    }, 600);
+                } else if (sender === 'user') {
+                    setTimeout(() => {
+                        addCafeMessage(
+                            'Thank you for your message! Our support team has been notified and will respond shortly.',
+                            'bot');
+                    }, 800);
+                }
+
+                let fileHtml = '';
+                if (files && files.length) {
+                    fileHtml = files.map(f =>
+                        `<div class="file-attachment"><i class="fas fa-paperclip"></i> ${f.name} (${(f.size/1024).toFixed(1)} KB)</div>`
+                        ).join('');
+                }
+
+                const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                msgDiv.innerHTML = `${content}${fileHtml}<span class="msg-time">${time}</span>`;
+                container.appendChild(msgDiv);
+                container.scrollTop = container.scrollHeight;
+            }
+
+            function handleCafeSend() {
+                const input = document.getElementById('cafeChatInput');
+                const text = input.value.trim();
+                if (!text && !cafeAttachedFiles.length) return;
+
+                let messageText = text || 'Service request with attachment';
+                if (!text && cafeAttachedFiles.length) {
+                    messageText = '📎 I\'ve attached files for my service request.';
+                }
+
+                const files = [...cafeAttachedFiles];
+                cafeAttachedFiles = [];
+                document.getElementById('cafeFilePreview').classList.remove('active');
+                document.getElementById('cafeFileInput').value = '';
+
+                addCafeMessage(messageText, 'user', files);
+                input.value = '';
+                input.style.height = 'auto';
+            }
+
+            // ==========================================
+            // MOVIES CHAT SYSTEM
+            // ==========================================
+            function addMoviesMessage(text, sender = 'user') {
+                const container = document.getElementById('moviesChatMessages');
+                const empty = container.querySelector('.empty-chat');
+                if (empty) empty.remove();
+
+                const msgDiv = document.createElement('div');
+                msgDiv.className = `msg ${sender}`;
+
+                // Bot logic
+                let content = text;
+                if (sender === 'bot') {
+                    if (text.includes('Availability')) {
+                        const movieList = MOVIES.map(m => m.title).slice(0, 5).join(', ');
+                        content =
+                            `🎥 <strong>Available Movies:</strong> ${movieList} and more. Which one would you like to check?`;
+                    } else if (text.includes('Download Link')) {
+                        const randomMovie = MOVIES[Math.floor(Math.random() * MOVIES.length)].title;
+                        content =
+                            `⬇️ <strong>Download Link for "${randomMovie}":</strong> <a href="#" style="color:var(--blue);">https://streamvault.local/free/${randomMovie.toLowerCase().replace(/\s/g,'_')}.mp4</a> (Expires in 24 hours)`;
+                    } else if (text.includes('Recommend')) {
+                        const recs = MOVIES.slice(0, 3).map(m => m.title).join(', ');
+                        content =
+                            `🎬 <strong>Top Recommendations:</strong> ${recs}. Enjoy watching! Let me know if you need more.`;
+                    } else if (text.includes('Issue')) {
+                        content =
+                            `❓ I'm sorry to hear that. Please describe the issue in detail (e.g., buffering, audio, subtitles) and I'll escalate it to our tech team.`;
+                    } else {
+                        content =
+                            `🤖 I'm here to help with movie queries! Try clicking the quick reply buttons above or ask me anything about our collection.`;
+                    }
+                }
+
+                const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                msgDiv.innerHTML = `${content}<span class="msg-time">${time}</span>`;
+                container.appendChild(msgDiv);
+                container.scrollTop = container.scrollHeight;
+            }
+
+            function handleMoviesSend() {
+                const input = document.getElementById('moviesChatInput');
+                const text = input.value.trim();
+                if (!text) return;
+
+                addMoviesMessage(text, 'user');
+                input.value = '';
+                input.style.height = 'auto';
+
+                // Bot reply
+                setTimeout(() => {
+                    if (text.toLowerCase().includes('link') || text.toLowerCase().includes('download')) {
+                        addMoviesMessage('⬇️ Request Download Link', 'bot');
+                    } else if (text.toLowerCase().includes('availability') || text.toLowerCase().includes(
+                        'available')) {
+                        addMoviesMessage('📽️ Check Movie Availability', 'bot');
+                    } else if (text.toLowerCase().includes('recommend') || text.toLowerCase().includes(
+                        'suggestion')) {
+                        addMoviesMessage('🎬 Recommend a movie', 'bot');
+                    } else if (text.toLowerCase().includes('issue') || text.toLowerCase().includes('problem') ||
+                        text.toLowerCase().includes('error')) {
+                        addMoviesMessage('❓ Report Issue', 'bot');
+                    } else {
+                        addMoviesMessage('🤖 How can I assist you with movies today?', 'bot');
+                    }
+                }, 500);
+            }
+
+            // ==========================================
+            // TUBONGE CHAT SYSTEM
+            // ==========================================
+            const KENYAN_NAMES = ['Wanjiru', 'Otieno', 'Muthoni', 'Kiprop', 'Amina', 'Juma', 'Wangari', 'Kamau', 'Akinyi',
+                'Odhiambo', 'Chepkorir', 'Kariuki', 'Njeri', 'Ochieng', 'Atieno'
+            ];
+            const TUBONGE_MESSAGES = [
+                'Hi everyone! 👋', 'How is the network here?', 'Has anyone watched the new movie?',
+                'I love this hotspot! 🥳', 'What\'s the weather like?', 'Any plans for the weekend?',
+                'This chat is awesome!', 'Can someone recommend a good series?',
+                'I\'m new here. Hello!', 'Tubonge means "Let\'s talk" in Swahili. Love it!',
+                'What\'s your favorite movie genre?', 'I\'m having a great day!', 'Anyone up for a game?',
+                'Streaming is super fast today!', 'Let\'s keep this chat lively!'
+            ];
+
+            let tubongeUser = localStorage.getItem('tubongeUser') || '';
+            if (!tubongeUser) {
+                tubongeUser = prompt('Enter your name to join Tubonge (Community Chat):');
+                if (tubongeUser) localStorage.setItem('tubongeUser', tubongeUser);
+                else tubongeUser = 'Guest_' + Math.floor(Math.random() * 1000);
+            }
+
+            function renderTubongeMessages() {
+                const container = document.getElementById('tubongeChatMessages');
+                const empty = container.querySelector('.empty-chat');
+                if (empty) empty.remove();
+
+                container.innerHTML = '';
+                const messages = JSON.parse(localStorage.getItem('tubongeMessages')) || [];
+                if (!messages.length) {
+                    container.innerHTML =
+                        `<div class="empty-chat"><i class="fas fa-comment"></i><span>Welcome to Tubonge!<br />Say hello to the community.</span></div>`;
+                    return;
+                }
+
+                messages.forEach(msg => {
+                    const msgDiv = document.createElement('div');
+                    msgDiv.className = `msg ${msg.sender === tubongeUser ? 'user' : 'bot'}`;
+                    const time = new Date(msg.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    msgDiv.innerHTML =
+                        `<strong style="font-size:0.7rem;color:var(--text-secondary);">${msg.sender}</strong> ${msg.text}<span class="msg-time">${time}</span>`;
+                    container.appendChild(msgDiv);
+                });
+                container.scrollTop = container.scrollHeight;
+            }
+
+            function sendTubongeMessage(text) {
+                if (!text.trim()) return;
+                const messages = JSON.parse(localStorage.getItem('tubongeMessages')) || [];
+                messages.push({ sender: tubongeUser, text: text.trim(), time: Date.now() });
+                localStorage.setItem('tubongeMessages', JSON.stringify(messages));
+                renderTubongeMessages();
+                renderTubongeUsers();
+
+                // Simulate reply from another user (20% chance)
+                if (Math.random() < 0.3) {
+                    setTimeout(() => {
+                        const messages2 = JSON.parse(localStorage.getItem('tubongeMessages')) || [];
+                        const randomName = KENYAN_NAMES[Math.floor(Math.random() * KENYAN_NAMES.length)];
+                        const randomMsg = TUBONGE_MESSAGES[Math.floor(Math.random() * TUBONGE_MESSAGES.length)];
+                        messages2.push({ sender: randomName, text: randomMsg, time: Date.now() });
+                        localStorage.setItem('tubongeMessages', JSON.stringify(messages2));
+                        renderTubongeMessages();
+                        renderTubongeUsers();
+                    }, 2000 + Math.random() * 3000);
+                }
+            }
+
+            function renderTubongeUsers() {
+                const users = [tubongeUser, ...KENYAN_NAMES.slice(0, 8)];
+                const list = document.getElementById('onlineUsersList');
+                const count = document.getElementById('onlineCount');
+                count.textContent = users.length;
+
+                list.innerHTML = users.map(name => `
+                    <div class="user-list-item">
+                        <div class="avatar online">${name.charAt(0).toUpperCase()}</div>
+                        <span class="uname">${name} ${name === tubongeUser ? '(You)' : ''}</span>
+                        <span class="status-indicator"></span>
+                    </div>
+                `).join('');
+            }
+
+            // Simulate periodic messages in Tubonge
+            function startTubongeSimulation() {
+                if (tubongeInterval) clearInterval(tubongeInterval);
+                tubongeInterval = setInterval(() => {
+                    const messages = JSON.parse(localStorage.getItem('tubongeMessages')) || [];
+                    if (messages.length > 5) return; // Keep it active but not too spammy
+
+                    const randomName = KENYAN_NAMES[Math.floor(Math.random() * KENYAN_NAMES.length)];
+                    const randomMsg = TUBONGE_MESSAGES[Math.floor(Math.random() * TUBONGE_MESSAGES.length)];
+                    messages.push({ sender: randomName, text: randomMsg, time: Date.now() });
+                    localStorage.setItem('tubongeMessages', JSON.stringify(messages));
+                    renderTubongeMessages();
+                    renderTubongeUsers();
+                }, 10000);
+            }
+
+            // ==========================================
+            // TAB SWITCHING
+            // ==========================================
+            function switchTab(tabId) {
+                document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+                document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+                document.getElementById('tab' + tabId.charAt(0).toUpperCase() + tabId.slice(1)).classList.add('active');
+                document.querySelector(`.tab-btn[data-tab="${tabId}"]`).classList.add('active');
+
+                if (tabId === 'movies') {
+                    renderGrids(searchQuery);
+                    // Refresh movies chat
+                }
+                if (tabId === 'packages') renderBandwidthStats();
+                if (tabId === 'tubonge') {
+                    renderTubongeUsers();
+                    renderTubongeMessages();
+                    startTubongeSimulation();
+                } else {
+                    if (tubongeInterval) clearInterval(tubongeInterval);
+                }
+            }
+
+            // ==========================================
+            // SEARCH
+            // ==========================================
+            function performSearch() {
+                const input = document.getElementById('searchInput');
+                const q = input.value.trim();
+                searchQuery = q;
+                document.getElementById('clearSearchBtn').classList.toggle('hidden', !q);
+                renderGrids(q);
+                const moviesTab = document.querySelector('.tab-btn[data-tab="movies"]');
+                if (!moviesTab.classList.contains('active')) switchTab('movies');
+            }
+
+            // ==========================================
+            // AD BANNER
+            // ==========================================
+            const ADS = [
+                { text: '🎬 <strong>Special Offer:</strong> Get 30% off your first purchase! Use code <strong>STREAM30</strong>',
+                    cta: 'Claim Now', link: '#' },
+                { text: '📱 <strong>Download our app</strong> and watch offline anytime. Available on iOS & Android.',
+                    cta: 'Learn More', link: '#' },
+                { text: '🍿 <strong>Binge-watch alert!</strong> New series added weekly. Stay tuned for the latest releases.',
+                    cta: 'Explore', link: '#' },
+                { text: '🎁 <strong>Refer a friend</strong> and earn KSh 100 credit for each successful referral!',
+                    cta: 'Refer Now', link: '#' }
+            ];
+            let adIndex = 0;
+
+            function rotateAd() {
+                if (adDismissed) return;
+                const ad = ADS[adIndex % ADS.length];
+                document.getElementById('adText').innerHTML = ad.text;
+                document.getElementById('adCta').textContent = ad.cta;
+                document.getElementById('adCta').href = ad.link;
+                adIndex = (adIndex + 1) % ADS.length;
+                adSeconds = 30;
+                document.getElementById('adTimerText').textContent = '30s';
+                if (adInterval) clearInterval(adInterval);
+                adInterval = setInterval(() => {
+                    adSeconds--;
+                    if (adSeconds <= 0) { clearInterval(adInterval);
+                        rotateAd(); } else { document.getElementById('adTimerText').textContent = adSeconds +
+                            's'; }
+                }, 1000);
+            }
+
+            function initAd() {
+                adDismissed = false;
+                document.getElementById('adBanner').classList.remove('hidden');
+                rotateAd();
+                document.getElementById('adDismiss').onclick = () => {
+                    adDismissed = true;
+                    document.getElementById('adBanner').classList.add('hidden');
+                    if (adInterval) clearInterval(adInterval);
+                    toast('Ad dismissed', 'info');
+                };
+            }
+
+            // ==========================================
+            // DOWNLOAD COPY
+            // ==========================================
+            document.getElementById('copyLinkBtn').addEventListener('click', () => {
+                const text = document.getElementById('downloadLinkDisplay').textContent;
+                if (navigator.clipboard?.writeText) {
+                    navigator.clipboard.writeText(text).then(() => toast('Link copied!', 'success')).catch(() =>
+                        fallbackCopy(text));
+                } else { fallbackCopy(text); }
+            });
+
+            function fallbackCopy(text) {
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                ta.style.cssText = 'position:fixed;opacity:0;';
+                document.body.appendChild(ta);
+                ta.select();
+                try { document.execCommand('copy');
+                    toast('Link copied!', 'success'); } catch (_) { toast('Could not copy.', 'error'); }
+                document.body.removeChild(ta);
+            }
+
+            // ==========================================
+            // MODAL CLOSE
+            // ==========================================
+            function closeModal(modalId) {
+                const el = document.getElementById(modalId);
+                el.classList.remove('open');
+                if (modalId === 'trailerModal') document.getElementById('trailerIframe').src = '';
+                if (modalId === 'downloadModal' && countdownInterval) clearInterval(countdownInterval);
+                if (modalId === 'checkoutModal') {
+                    document.getElementById('stkSim').classList.remove('active');
+                    document.getElementById('payBtn').disabled = false;
+                    isProcessingPayment = false;
+                }
+            }
+
+            document.getElementById('detailClose').onclick = () => closeModal('detailModal');
+            document.getElementById('detailModal').addEventListener('click', (e) => { if (e.target === e.currentTarget)
+                    closeModal('detailModal'); });
+            document.getElementById('trailerClose').onclick = () => closeModal('trailerModal');
+            document.getElementById('trailerModal').addEventListener('click', (e) => { if (e.target === e.currentTarget)
+                    closeModal('trailerModal'); });
+            document.getElementById('checkoutClose').onclick = () => closeModal('checkoutModal');
+            document.getElementById('checkoutModal').addEventListener('click', (e) => { if (e.target === e.currentTarget)
+                    closeModal('checkoutModal'); });
+            document.getElementById('downloadClose').onclick = () => closeModal('downloadModal');
+            document.getElementById('downloadModal').addEventListener('click', (e) => { if (e.target === e.currentTarget)
+                    closeModal('downloadModal'); });
+
+            document.getElementById('cartToggle').onclick = () => document.getElementById('cartOverlay').classList.toggle(
+                'open');
+            document.getElementById('cartClose').onclick = () => document.getElementById('cartOverlay').classList.remove(
+                'open');
+            document.getElementById('cartOverlay').addEventListener('click', (e) => { if (e.target === e.currentTarget)
+                    document.getElementById('cartOverlay').classList.remove('open'); });
+
+            document.getElementById('checkoutBtn').onclick = () => {
+                document.getElementById('cartOverlay').classList.remove('open');
+                openMovieCheckout();
+            };
+
+            document.getElementById('payBtn').onclick = handlePayment;
+            document.getElementById('stkSuccess').onclick = () => { if (!isProcessingPayment) completePayment(true); };
+            document.getElementById('stkFail').onclick = () => { if (!isProcessingPayment) completePayment(false); };
+
+            document.getElementById('disconnectBtn').onclick = disconnectUser;
+
+            // ==========================================
+            // TAB EVENTS
+            // ==========================================
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+            });
+
+            // ==========================================
+            // SEARCH EVENTS
+            // ==========================================
+            document.getElementById('searchBtn').addEventListener('click', performSearch);
+            document.getElementById('searchInput').addEventListener('keydown', (e) => { if (e.key === 'Enter')
+                    performSearch(); });
+            document.getElementById('clearSearchBtn').addEventListener('click', () => {
+                document.getElementById('searchInput').value = '';
+                document.getElementById('clearSearchBtn').classList.add('hidden');
+                searchQuery = '';
+                renderGrids('');
+                const moviesTab = document.querySelector('.tab-btn[data-tab="movies"]');
+                if (!moviesTab.classList.contains('active')) switchTab('movies');
+            });
+
+            // ==========================================
+            // KEYBOARD SHORTCUTS
+            // ==========================================
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    ['downloadModal', 'checkoutModal', 'trailerModal', 'detailModal'].forEach(id => {
+                        if (document.getElementById(id).classList.contains('open')) closeModal(id);
+                    });
+                    if (document.getElementById('cartOverlay').classList.contains('open')) document.getElementById(
+                        'cartOverlay').classList.remove('open');
+                }
+                if ((e.ctrlKey && e.key === 'k') || (e.key === '/' && !['INPUT', 'TEXTAREA'].includes(e.target
+                        .tagName))) {
+                    e.preventDefault();
+                    document.getElementById('searchInput').focus();
+                }
+            });
+
+            // ==========================================
+            // INIT CHAT BINDINGS
+            // ==========================================
+            function initChats() {
+                // Cyber Cafe Chat
+                document.getElementById('cafeSendBtn').addEventListener('click', handleCafeSend);
+                document.getElementById('cafeChatInput').addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault();
+                        handleCafeSend(); }
+                });
+                document.getElementById('cafeChatInput').addEventListener('input', function() {
+                    this.style.height = 'auto';
+                    this.style.height = Math.min(this.scrollHeight, 80) + 'px';
+                });
+
+                // File upload for Cafe
+                document.getElementById('cafeFileInput').addEventListener('change', (e) => {
+                    const files = e.target.files;
+                    if (!files.length) return;
+                    for (let f of files) cafeAttachedFiles.push(f);
+                    if (cafeAttachedFiles.length) {
+                        document.getElementById('cafeFileName').textContent = `${cafeAttachedFiles.length} file(s) attached`;
+                        document.getElementById('cafeFilePreview').classList.add('active');
+                    }
+                    document.getElementById('cafeFileInput').value = '';
+                });
+                document.getElementById('cafeFileRemove').addEventListener('click', () => {
+                    cafeAttachedFiles = [];
+                    document.getElementById('cafeFilePreview').classList.remove('active');
+                    document.getElementById('cafeFileInput').value = '';
+                });
+
+                // Service items click for Cafe
+                document.querySelectorAll('.service-item').forEach(el => {
+                    el.addEventListener('click', () => {
+                        const service = el.dataset.service || el.querySelector('.si-name')?.textContent ||
+                            'Service';
+                        const price = el.dataset.price || '';
+                        const msg = `SERVICE: ${service}${price ? ` (${price})` : ''}`;
+                        document.getElementById('cafeChatInput').value = msg;
+                        document.getElementById('cafeChatInput').focus();
+                        setTimeout(handleCafeSend, 300);
+                    });
+                });
+
+                // Movies Chat
+                document.getElementById('moviesSendBtn').addEventListener('click', handleMoviesSend);
+                document.getElementById('moviesChatInput').addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault();
+                        handleMoviesSend(); }
+                });
+                document.getElementById('moviesChatInput').addEventListener('input', function() {
+                    this.style.height = 'auto';
+                    this.style.height = Math.min(this.scrollHeight, 80) + 'px';
+                });
+
+                // Quick replies
+                document.querySelectorAll('#moviesQuickReplies .qr-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const msg = btn.dataset.msg;
+                        document.getElementById('moviesChatInput').value = msg;
+                        handleMoviesSend();
+                    });
+                });
+
+                // Tubonge Chat
+                document.getElementById('tubongeSendBtn').addEventListener('click', () => {
+                    const input = document.getElementById('tubongeChatInput');
+                    sendTubongeMessage(input.value);
+                    input.value = '';
+                });
+                document.getElementById('tubongeChatInput').addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        const input = document.getElementById('tubongeChatInput');
+                        sendTubongeMessage(input.value);
+                        input.value = '';
+                    }
+                });
+
+                // Initial welcome messages for chats
+                setTimeout(() => {
+                    addMoviesMessage(
+                        '👋 Welcome to Movies Support! Ask me about availability, download links, or report issues.',
+                        'bot');
+                    addCafeMessage(
+                        '👋 Welcome to our Cyber Cafe! Click on any service above or type your request. You can also upload files.',
+                        'bot');
+                }, 500);
+            }
+
+            // ==========================================
+            // INIT
+            // ==========================================
+            function init() {
+                // Demo connections
+                const demo1 = {
+                    id: 'demo1',
+                    package: { speed: 2, duration: '2hrs', price: 20, label: '2 Mbps · 2hrs',
+                    durationMs: 2 * 60 * 60 * 1000 },
+                    allocatedAt: Date.now() - 30 * 60 * 1000,
+                    expiresAt: Date.now() + 90 * 60 * 1000
+                };
+                const demo2 = {
+                    id: 'demo2',
+                    package: { speed: 3, duration: '1 week', price: 300, label: '3 Mbps · 1 week',
+                        durationMs: 7 * 24 * 60 * 60 * 1000 },
+                    allocatedAt: Date.now() - 2 * 60 * 60 * 1000,
+                    expiresAt: Date.now() + 6 * 24 * 60 * 60 * 1000
+                };
+                activeConnections.push(demo1, demo2);
+
+                renderBandwidthStats();
+                renderCart();
+                renderGrids('');
+                initAd();
+                updateConnectionUI();
+                initChats();
+
+                // Initial Tubonge messages
+                if (!localStorage.getItem('tubongeMessages')) {
+                    const initial = [
+                        { sender: 'Wanjiru', text: 'Hello everyone! Welcome to Tubonge! 🎉', time: Date.now() -
+                            60000 },
+                        { sender: 'Otieno', text: 'This is awesome! Finally a chat for the hotspot.', time: Date
+                            .now() - 30000 },
+                        { sender: 'Muthoni', text: 'Has anyone watched the new "Galactic Uprising"?', time: Date
+                            .now() - 10000 }
+                    ];
+                    localStorage.setItem('tubongeMessages', JSON.stringify(initial));
+                }
+
+                switchTab('packages');
+
+                window.__STREAM = { state: { activeConnections, currentUserConnection, cart, TOTAL_BANDWIDTH },
+                    disconnectUser, renderBandwidthStats };
+            }
+
+            init();
+
+        })();
+    </script>
+
+</body>
+</html>
