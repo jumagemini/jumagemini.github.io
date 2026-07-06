@@ -1,6 +1,6 @@
 # 🎬 Stream Hotspot – custom Captive Portal UI for Mikrotik and openwrt router network
 
-![Image](https://jumagemini.github.io/screenshots/dashboard.png "Captive Portal Dashboard UI")
+![Captive Portal UI](screenshots/dashboard.png)
 
 **Live Demo:** [https://jumagemini.github.io/](https://jumagemini.github.io/)
 
@@ -80,7 +80,7 @@ No external libraries or frameworks – pure frontend craftsmanship.
 
 | Internet Packages | Movies Tab | Cyber Cafe | Tubonge Chat |
 |-------------------|------------|------------|--------------|
-| [packages.png](https://jumagemini.github.io/screenshots/packages.png) | [packages.png](https://jumagemini.github.io/screenshots/movies.png) | [packages.png](https://jumagemini.github.io/screenshots/services.png) | [packages.png](https://jumagemini.github.io/screenshots/tubonge.png) |
+| [packages.png](https://jumagemini.github.io/jumagemini.github.io/screenshots/packages.png) | [movies.png](https://jumagemini.github.io/jumagemini.github.io/screenshots/movies.png) | [services.png](https://jumagemini.github.io/jumagemini.github.io/screenshots/services.png) | [tubonge.png](https://jumagemini.github.io/jumagemini.github.io/screenshots/tubonge.png) |
 
 
 ---
